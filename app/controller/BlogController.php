@@ -18,7 +18,7 @@ class BlogController
 
         echo $this->twig->render('index.twig', [
             'articles'   => $articles,
-            'titre_doc'  => 'Bienvenue sur mon blog',
+            'titre_doc'  => 'Blog - Accueil',
             'titre_page' => 'Liste des articles',
         ]);
     }
@@ -26,7 +26,7 @@ class BlogController
     public function contact(): void
     {
         echo $this->twig->render('contact.twig', [
-            'titre_doc'  => 'Bienvenue sur mon blog',
+            'titre_doc'  => "Blog - Contact",
             'titre_page' => 'Liste des articles',
         ]);
 
@@ -45,7 +45,4 @@ class BlogController
         ]);
 
     }
-
-
-
 }

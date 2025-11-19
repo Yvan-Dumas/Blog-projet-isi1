@@ -23,7 +23,7 @@ class Blog {
 
 
      
-
+/*
     public function addTask($taskName) {
         
         $query = $this->db->prepare("INSERT INTO tasks (taskName) VALUES (:taskName)");
@@ -36,4 +36,5 @@ class Blog {
         $query->bindParam(":id", $taskId);
         $query->execute();
     }
+*/
 }

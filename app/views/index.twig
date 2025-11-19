@@ -8,8 +8,7 @@
   <div class="container">
     {% for item in articles | sort %}
       <div class="articles">
-        <a href="article?id={{ item.id }}">Article {{ item.id }}</a>
-        <p>{{ item.description }}</p>
+        <a href="article?{{ item.slug }}"> {{ item.titre }}</a>
       </div>
     {% endfor %}
   </div>
