@@ -12,20 +12,30 @@ $twig->addGlobal('base_url', $basePath . '/');
 $controller = new BlogController($twig);
 
 // Récupération de l'URL demandée
-$requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); 
+// ex: /BLOG-PROJET-ISI1/public/contact
 
-// ➤ Normalisation automatique avec SCRIPT_NAME
-$basePath = dirname($_SERVER['SCRIPT_NAME']); // => /BLOGMVC/public
-
-// On retire le préfixe
-if (strpos($requestUri, $basePath) === 0) {
-    $requestUri = substr($requestUri, strlen($basePath));
-}
+// On enlève tout jusqu'à /public
+$requestUri = preg_replace('#^/.*/public#', '', $requestUri);
+// ex: devient /contact
 
 // Si vide → /
 if ($requestUri === '' || $requestUri === false) {
     $requestUri = '/';
 }
+
+// Normalisation (au cas où) : s'assurer qu'il y a un seul / au début
+$requestUri = '/' . ltrim($requestUri, '/');
+// ex: /contact ou /
+
+
+
+if (preg_match('#^/article/(.+)$#', $requestUri, $matches)) {
+    $slug = $matches[1];
+    $controller->article($slug);
+    exit; // on s'arrête là, pas besoin de passer dans le switch
+}
+
 
 switch ($requestUri) {
     case '/':
@@ -38,7 +48,16 @@ switch ($requestUri) {
         break;
 
     case '/article':
-        $controller->article($_GET['id']);
+        if (preg_match('#^/article/(.+)$#', $requestUri, $matches)) {
+            $slug = $matches[1];
+            $controller->article($slug);
+            break;
+        }
+
+        break;
+
+    case '/auth':
+        $controller->auth();
         break;
 
     default:
@@ -46,3 +65,4 @@ switch ($requestUri) {
         echo "Page non trouvée - URI : $requestUri";
         break;
 }
+
