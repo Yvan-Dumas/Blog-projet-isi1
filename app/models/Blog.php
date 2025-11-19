@@ -13,9 +13,9 @@ class Blog {
     }
 
 
-    public function getArticleById($id): array {
-        $query = $this->db->prepare("SELECT * FROM articles WHERE id = :id");
-        $query->bindParam(':id', $id);
+    public function getArticleBySlug($Slug): array {
+        $query = $this->db->prepare("SELECT * FROM articles WHERE slug = :slug");
+        $query->bindParam(':slug', $Slug);
         $query->execute();
         return $query->fetch(PDO::FETCH_ASSOC);
     }

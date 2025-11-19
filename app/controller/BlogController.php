@@ -32,10 +32,19 @@ class BlogController
 
     }
 
-    public function article($id): void
+    public function auth(): void
+    {
+        echo $this->twig->render('auth.twig', [
+            'titre_doc'  => "Blog - Contact",
+            'titre_page' => 'Liste des articles',
+        ]);
+
+    }
+
+    public function article($slug): void
     {
 
-        $article = $this->BlogModel->getArticleById($id);
+        $article = $this->BlogModel->getArticleBySlug($slug);
         echo $this->twig->render('article.twig', [
 
             'article'    => $article,
