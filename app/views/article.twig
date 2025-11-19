@@ -1,0 +1,15 @@
+{% extends "base.html.twig" %}
+
+{% block title %}{{ titre_doc }}{% endblock %}
+
+{% block content %}
+  <h1>Article {{ article["id"] }} : {{ article["titre"] }}</h1>
+
+  <div class="container">
+    <p>
+      Date de publication : {{ article["date_publication"] }}<br><br>
+      <img src="image/{{ article[0].image|default('default.png') }}" alt="pas d'image disponible"><br>
+      {{ article['contenu'] }}
+    </p>
+  </div>
+{% endblock %}

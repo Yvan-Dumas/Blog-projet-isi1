@@ -1,0 +1,16 @@
+{% extends "base.html.twig" %}
+
+{% block title %}{{ titre_doc }}{% endblock %}
+
+{% block content %}
+  <h1>{{ titre_page }}</h1>
+
+  <div class="container">
+    {% for item in articles | sort %}
+      <div class="articles">
+        <a href="article?id={{ item.id }}">Article {{ item.id }}</a>
+        <p>{{ item.description }}</p>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

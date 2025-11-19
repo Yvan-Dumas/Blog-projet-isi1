@@ -1,0 +1,53 @@
+
+<!doctype html>
+<html
+  lang="fr"
+  x-data="{ dark: document.documentElement.classList.contains('dark') }"
+  x-init="$watch('dark', v => {
+            document.documentElement.classList.toggle('dark', v);
+            localStorage.theme = v ? 'dark' : 'light';
+          })"
+  :class="{ dark }"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}Mon site{% endblock %}</title>
+
+    <script>
+      (() => {
+        const t = localStorage.theme;
+        if (t === 'dark' ) document.documentElement.classList.add('dark');
+      })();
+    </script>
+
+    <link rel="stylesheet" href="css/style.css" />
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    {% block head_extra %}{% endblock %}
+  </head>
+
+  <body>
+    <header>
+      <nav>
+        <div class="nav-links">
+          <a href="/BLOGMVC/public/">Accueil</a>
+          <a href="/BLOGMVC/public/contact">Contact</a>
+        </div>
+        <button class="theme-btn" @click="dark = !dark" aria-label="Basculer le thème">
+          <span x-show="!dark">🌙</span>
+          <span x-show="dark">☀️</span>
+        </button>
+      </nav>
+    </header>
+
+    <main>
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+      <p>@ 2025 mon blog | tous les droits réservés</p>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+  </body>
+</html>
