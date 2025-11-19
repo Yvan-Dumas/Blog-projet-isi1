@@ -30,9 +30,8 @@
     <header>
       <nav>
         <div class="nav-links">
-          <a href= {{basePath}}>Accueil</a>
-          <a href= {{basePath}} >Contact</a>
-          php>
+          <a href="{{ base_url }}">Accueil</a>
+          <a href="{{ base_url }}contact">Contact</a>
         </div>
         <button class="theme-btn" @click="dark = !dark" aria-label="Basculer le thème">
           <span x-show="!dark">🌙</span>

@@ -1,5 +1,4 @@
 RewriteEngine On
-RewriteBase /BLOGMVC/public/
 
 # Si le fichier ou le dossier n'existe pas, on redirige vers index.php
 RewriteCond %{REQUEST_FILENAME} !-f

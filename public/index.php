@@ -6,6 +6,9 @@ require_once __DIR__ . '/../app/controller/BlogController.php';
 $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/../app/views');
 $twig = new \Twig\Environment($loader, ['cache' => false]);
 
+$basePath = dirname($_SERVER['SCRIPT_NAME']); // /BLOGMVC/public
+$twig->addGlobal('base_url', $basePath . '/');
+
 $controller = new BlogController($twig);
 
 // Récupération de l'URL demandée
