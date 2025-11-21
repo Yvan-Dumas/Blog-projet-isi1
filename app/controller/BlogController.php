@@ -15,7 +15,6 @@ class BlogController
     public function index(): void
     {
         $articles = $this->BlogModel->getAllArticles();
-
         echo $this->twig->render('index.twig', [
             'articles'   => $articles,
             'titre_doc'  => 'Blog - Accueil',
@@ -27,7 +26,7 @@ class BlogController
     {
         echo $this->twig->render('contact.twig', [
             'titre_doc'  => "Blog - Contact",
-            'titre_page' => 'Liste des articles',
+            'titre_page' => 'Contactez-nous',
         ]);
 
     }

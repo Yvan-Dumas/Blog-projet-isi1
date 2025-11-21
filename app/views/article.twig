@@ -3,13 +3,12 @@
 {% block title %}{{ titre_doc }}{% endblock %}
 
 {% block content %}
-  <h1>Article {{ article["id"] }} : {{ article["titre"] }}</h1>
+  <h1 class="text-center my-4">{{ article["titre"] }}</h1>
 
-  <div class="container">
-    <p>
-      Date de publication : {{ article["date_publication"] }}<br><br>
-      <img src="image/{{ article[0].image|default('default.png') }}" alt="pas d'image disponible"><br>
-      {{ article['contenu'] }}
-    </p>
+  <div class="mx-4">
+    <p class="mb-3">Date de mise à jour : {{ article["date_mise_a_jour"] }}</p>
+    <img class="mb-3" src="image/{{ article[0].image|default('default.png') }}" alt="pas d'image disponible" >
+    <p >{{ article['contenu'] }}</p>
+    
   </div>
 {% endblock %}
