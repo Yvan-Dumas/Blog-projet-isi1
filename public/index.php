@@ -6,60 +6,47 @@ require_once __DIR__ . '/../app/controller/BlogController.php';
 $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/../app/views');
 $twig = new \Twig\Environment($loader, ['cache' => false]);
 
-$basePath = dirname($_SERVER['SCRIPT_NAME']); // /BLOGMVC/public
-$twig->addGlobal('base_url', $basePath . '/');
-
 $controller = new BlogController($twig);
+
+$basePath = dirname($_SERVER['SCRIPT_NAME']); // /Blog-projet-isi1/public
+$twig->addGlobal('base_url', $basePath . '/');
 
 // Récupération de l'URL demandée
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); 
 // ex: /BLOG-PROJET-ISI1/public/contact
 
-// On enlève tout jusqu'à /public
+// On enlève tout jusqu'à /public inclus
 $requestUri = preg_replace('#^/.*/public#', '', $requestUri);
 // ex: devient /contact
 
-// Si vide → /
-if ($requestUri === '' || $requestUri === false) {
+// Si l'url est vide, on met '/'
+if (empty($requestUri)) {
     $requestUri = '/';
 }
 
-// Normalisation (au cas où) : s'assurer qu'il y a un seul / au début
+// Normalisation pour s'assurer qu'il y a un seul / au début
 $requestUri = '/' . ltrim($requestUri, '/');
 // ex: /contact ou /
 
 
-
+// Si on veut afficher un article
 if (preg_match('#^/article/(.+)$#', $requestUri, $matches)) {
     $slug = $matches[1];
     $controller->article($slug);
-    exit; // on s'arrête là, pas besoin de passer dans le switch
+    exit;
 }
-
-
+// Sinon
 switch ($requestUri) {
     case '/':
     case '/index':
         $controller->index();
         break;
-
     case '/contact':
         $controller->contact();
         break;
-
-    case '/article':
-        if (preg_match('#^/article/(.+)$#', $requestUri, $matches)) {
-            $slug = $matches[1];
-            $controller->article($slug);
-            break;
-        }
-
-        break;
-
     case '/auth':
         $controller->auth();
         break;
-
     default:
         http_response_code(404);
         echo "Page non trouvée - URI : $requestUri";
