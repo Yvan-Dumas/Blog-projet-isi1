@@ -1,9 +1,12 @@
 <?php // app/models/Blog.php
+
+require_once __DIR__ . '/../../config/Database.php';
+
 class Blog {
     private $db;
 
     public function __construct() {
-        $this->db = new PDO('mysql:host=localhost;dbname=blog_db', 'root', '');
+        $this->db = Database::getInstance()->getConnection();
     }
 
     public function getAllArticles(){
@@ -19,22 +22,4 @@ class Blog {
         $query->execute();
         return $query->fetch(PDO::FETCH_ASSOC);
     }
-
-
-
-     
-/*
-    public function addTask($taskName) {
-        
-        $query = $this->db->prepare("INSERT INTO tasks (taskName) VALUES (:taskName)");
-        $query->bindParam(':taskName', $taskName);
-        $query->execute();
-    }
-
-    public function deleteTask($taskId) {
-        $query = $this->db->prepare("DELETE FROM tasks WHERE id = :id");
-        $query->bindParam(":id", $taskId);
-        $query->execute();
-    }
-*/
 }
