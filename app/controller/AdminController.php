@@ -13,9 +13,31 @@ class AdminController
 
     public function AdminBoard(): void
     {
+        $stats = [
+            'nbArticles' => $this->adminModel->getArticleCount(),
+            'nbCommentaires' => $this->adminModel->getPendingCommentCount(),
+            'nbUtilisateurs' => $this->adminModel->getActiveUserCount(),
+        ];
+
         echo $this->twig->render('adminBoard.twig', [
             'titre_doc' => "Blog - AdminBoard",
-            'titre_page' => 'AdminBoard',
+            'titre_page' => 'Tableau de bord',
+            'stats' => $stats
+        ]);
+    }
+
+    public function activity(): void
+    {
+        $data = [
+            'articles' => $this->adminModel->getLastArticles(),
+            'comments' => $this->adminModel->getLastComments(),
+            'users' => $this->adminModel->getLastUsers(),
+        ];
+
+        echo $this->twig->render('adminActivity.twig', [
+            'titre_doc' => "Blog - Activité",
+            'titre_page' => "Fil d'activité",
+            'activity' => $data
         ]);
     }
 }

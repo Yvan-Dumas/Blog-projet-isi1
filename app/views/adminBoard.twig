@@ -1,0 +1,48 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+	{{ titre_doc }}
+{% endblock %}
+
+{% block content %}
+	<h1 class="text-center my-4">{{ titre_page }}</h1>
+
+	<div class="row row-cols-1 row-cols-md-3 g-4 mx-5 px-5">
+		<!-- Articles Card -->
+		<div class="col">
+			<div class="card h-100 border-primary border-3">
+				<div class="card-body text-center">
+					<h5 class="card-title text-primary">Articles</h5>
+					<p class="card-text display-4 fw-bold">{{ stats.nbArticles }}</p>
+					<p class="text-muted">Total articles publiés ou brouillons</p>
+				</div>
+			</div>
+		</div>
+
+		<!-- Comments Card -->
+		<div class="col">
+			<div class="card h-100 border-warning border-3">
+				<div class="card-body text-center">
+					<h5 class="card-title text-warning">Commentaires</h5>
+					<p class="card-text display-4 fw-bold">{{ stats.nbCommentaires }}</p>
+					<p class="text-muted">En attente de modération</p>
+				</div>
+			</div>
+		</div>
+
+		<!-- Users Card -->
+		<div class="col">
+			<div class="card h-100 border-success border-3">
+				<div class="card-body text-center">
+					<h5 class="card-title text-success">Utilisateurs</h5>
+					<p class="card-text display-4 fw-bold">{{ stats.nbUtilisateurs }}</p>
+					<p class="text-muted">Comptes actifs sur le site</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <div class="text-center my-5">
+        <a href="{{ base_url }}activity" class="btn btn-primary btn-lg">Voir le fil d'activité complet</a>
+    </div>
+{% endblock %}

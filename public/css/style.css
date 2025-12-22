@@ -6,11 +6,11 @@
 
 /* Mode clair var */
 :root {
-  --bg: #f7f9fc;              
+  --bg: #f7f9fc;
   --text: #111111;
   --muted-text: #444;
   --card-bg: #ffffff;
-  --border: #cfd8e3;          
+  --border: #cfd8e3;
   --nav-bg: #333333;
   --nav-text: #ffffff;
   --link: #0d6efd;
@@ -39,7 +39,8 @@
 }
 
 
-html, body {
+html,
+body {
   height: 100%;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 }

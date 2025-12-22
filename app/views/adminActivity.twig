@@ -1,0 +1,69 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+	{{ titre_doc }}
+{% endblock %}
+
+{% block content %}
+	<h1 class="text-center my-4">{{ titre_page }}</h1>
+
+	<div class="row mx-4 px-4">
+        <!-- Derniers Articles -->
+		<div class="col-md-4">
+			<div class="card border-primary mb-3">
+				<div class="card-header bg-primary text-white">Derniers Articles</div>
+				<ul class="list-group list-group-flush">
+                    {% for article in activity.articles %}
+					<li class="list-group-item bg-transparent">
+                        <small class="text-primary fw-bold">{{ article.date_creation }}</small><br>
+						<strong class="text-muted">{{ article.titre }}</strong><br>
+                        <span class="badge {% if article.statut == 'Publié' %}bg-success{% else %}bg-secondary{% endif %}">{{ article.statut }}</span>
+					</li>
+                    {% else %}
+                    <li class="list-group-item bg-transparent">Aucun article récent.</li>
+                    {% endfor %}
+				</ul>
+			</div>
+		</div>
+
+        <!-- Derniers Commentaires -->
+		<div class="col-md-4">
+			<div class="card border-warning mb-3">
+				<div class="card-header bg-warning text-white">Derniers Commentaires</div>
+				<ul class="list-group list-group-flush">
+                    {% for comment in activity.comments %}
+					<li class="list-group-item bg-transparent">
+                        <small class="text-primary fw-bold">{{ comment.date_commentaire }}</small><br>
+						<strong class="text-muted">{{ comment.nom_auteur }}</strong> <span class="text-muted">sur</span> <em class="text-muted">{{ comment.article_titre }}</em><br>
+                        <i class="text-muted">"{{ comment.contenu|length > 50 ? comment.contenu|slice(0, 50) ~ '...' : comment.contenu }}"</i>
+					</li>
+                    {% else %}
+                    <li class="list-group-item bg-transparent">Aucun commentaire récent.</li>
+                    {% endfor %}
+				</ul>
+			</div>
+		</div>
+
+        <!-- Nouveaux Utilisateurs -->
+		<div class="col-md-4">
+			<div class="card border-success mb-3">
+				<div class="card-header bg-success text-white">Nouveaux Utilisateurs</div>
+				<ul class="list-group list-group-flush">
+                    {% for user in activity.users %}
+					<li class="list-group-item bg-transparent">
+                        <small class="text-primary fw-bold">{{ user.date_inscription }}</small><br>
+						<strong class="text-muted">{{ user.nom_utilisateur }}</strong><br>
+                        <small class="text-muted">{{ user.email }}</small>
+					</li>
+                    {% else %}
+                    <li class="list-group-item bg-transparent">Aucun nouvel utilisateur.</li>
+                    {% endfor %}
+				</ul>
+			</div>
+		</div>
+	</div>
+
+    <div class="text-center my-4">
+        <a href="{{ base_url }}AdminBoard" class="btn btn-outline-secondary">Retour au tableau de bord</a>
+    </div>
+{% endblock %}
