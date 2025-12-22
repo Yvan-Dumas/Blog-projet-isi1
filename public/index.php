@@ -57,6 +57,9 @@ switch ($requestUri) {
     case '/logout':
         $authController->logout();
         break;
+    case '/AdminBoard':
+        $AdminController->AdminBoard();
+        break;
     default:
         http_response_code(404);
         echo "Page non trouvée - URI : $requestUri";

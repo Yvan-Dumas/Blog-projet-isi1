@@ -39,6 +39,9 @@ document.documentElement.classList.add('dark');
 						<a href="{{ base_url }}contact" class="nav-link ms-4">Contact</a>
 
 						{% if session.user %}
+							{% if 1 in session.user.roles %}
+								<a href="{{ base_url }}AdminBoard" class="nav-link ms-4">AdminBoard</a>
+							{% endif %}	
 							<a href="{{ base_url }}logout" class="nav-link ms-4">Déconnexion</a>
 						{% else %}
 							<a href="{{ base_url }}auth" class="nav-link ms-4">Connexion</a>
