@@ -16,8 +16,8 @@ class BlogController
     {
         $articles = $this->BlogModel->getAllArticles();
         echo $this->twig->render('index.twig', [
-            'articles'   => $articles,
-            'titre_doc'  => 'Blog - Accueil',
+            'articles' => $articles,
+            'titre_doc' => 'Blog - Accueil',
             'titre_page' => 'Liste des articles',
         ]);
     }
@@ -25,20 +25,12 @@ class BlogController
     public function contact(): void
     {
         echo $this->twig->render('contact.twig', [
-            'titre_doc'  => "Blog - Contact",
+            'titre_doc' => "Blog - Contact",
             'titre_page' => 'Contactez-nous',
         ]);
 
     }
 
-    public function auth(): void
-    {
-        echo $this->twig->render('auth.twig', [
-            'titre_doc'  => "Blog - Contact",
-            'titre_page' => 'Liste des articles',
-        ]);
-
-    }
 
     public function article($slug): void
     {
@@ -46,8 +38,8 @@ class BlogController
         $article = $this->BlogModel->getArticleBySlug($slug);
         echo $this->twig->render('article.twig', [
 
-            'article'    => $article,
-            'titre_doc'  => 'Article',
+            'article' => $article,
+            'titre_doc' => 'Article',
             'titre_page' => 'Détail de l\'article',
 
         ]);

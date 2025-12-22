@@ -1,53 +1,22 @@
+{% extends "base.html.twig" %}
 
-<!doctype html>
-<html
-  lang="fr"
-  x-data="{ dark: document.documentElement.classList.contains('dark') }"
-  x-init="$watch('dark', v => {
-            document.documentElement.classList.toggle('dark', v);
-            localStorage.theme = v ? 'dark' : 'light';
-          })"
-  :class="{ dark }"
->
-  <head>
-    <meta charset="UTF-8" />
-    <title>{% block title %}Mon site{% endblock %}</title>
+{% block title %}
+	{{ titre_doc }}
+{% endblock %}
 
-    <script>
-      (() => {
-        const t = localStorage.theme;
-        if (t === 'dark' ) document.documentElement.classList.add('dark');
-      })();
-    </script>
+{% block content %}
+	<h1 class="text-center my-4">{{ titre_page }}</h1>
 
-    <link rel="stylesheet" href="css/style.css" />
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+	<div class="mx-5 px-5">
+		<form id="authForm" class="mx-auto w-50" action="{{ base_url }}login" method="POST">
 
-    {% block head_extra %}{% endblock %}
-  </head>
+			<label for="email" class="form-label">Email :</label><br>
+			<input type="email" id="email" name="email" class="form-control" required><br><br>
 
-  <body>
-    <header>
-      <nav>
-        <div class="nav-links">
-          <a href="{{ base_url }}">Accueil</a>
-          <a href="{{ base_url }}contact">Contact</a>
-        </div>
-        <button class="theme-btn" @click="dark = !dark" aria-label="Basculer le thème">
-          <span x-show="!dark">🌙</span>
-          <span x-show="dark">☀️</span>
-        </button>
-      </nav>
-    </header>
+			<label for="password" class="form-label">Mot de passe :</label><br>
+			<input type="password" id="password" name="password" class="form-control" required><br><br>
 
-    <main>
-      {% block content %}{% endblock %}
-    </main>
-
-    <footer>
-      <p>@ 2025 mon blog | tous les droits réservés</p>
-    </footer>
-
-    {% block scripts %}{% endblock %}
-  </body>
-</html>
+			<input class="submit-btn btn btn-primary mb-5" type="submit" value="Envoyer">
+		</form>
+	</div>
+{% endblock %}

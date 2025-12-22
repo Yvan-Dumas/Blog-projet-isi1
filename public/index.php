@@ -1,18 +1,22 @@
 <?php
+session_start();
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../app/controller/BlogController.php';
+require_once __DIR__ . '/../app/controller/AuthController.php';
 
 // Twig
 $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/../app/views');
 $twig = new \Twig\Environment($loader, ['cache' => false]);
 
 $controller = new BlogController($twig);
+$authController = new AuthController($twig);
 
 $basePath = dirname($_SERVER['SCRIPT_NAME']); // /Blog-projet-isi1/public
 $twig->addGlobal('base_url', $basePath . '/');
+$twig->addGlobal('session', $_SESSION);
 
 // Récupération de l'URL demandée
-$requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); 
+$requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 // ex: /BLOG-PROJET-ISI1/public/contact
 
 // On enlève tout jusqu'à /public inclus
@@ -45,7 +49,13 @@ switch ($requestUri) {
         $controller->contact();
         break;
     case '/auth':
-        $controller->auth();
+        $authController->auth();
+        break;
+    case '/login':
+        $authController->login();
+        break;
+    case '/logout':
+        $authController->logout();
         break;
     default:
         http_response_code(404);
