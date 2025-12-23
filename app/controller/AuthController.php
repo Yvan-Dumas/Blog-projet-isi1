@@ -2,6 +2,8 @@
 
 require_once __DIR__ . '/../models/Blog.php';
 
+require_once __DIR__ . '/../Logger.php';
+
 class AuthController
 {
     private \Twig\Environment $twig;
@@ -47,8 +49,16 @@ class AuthController
             } else {
                 // Echec
                 echo "Identifiants incorrects.";
-            }
 
+                // Ajout message de log
+                Logger::getInstance()->security(
+                    "Echec de connexion",
+                    [
+                        'email' => $email,
+                        'ip' => $_SERVER['REMOTE_ADDR']
+                    ]
+                );
+            }
         } else {
             // Si ce n'est pas un POST, on redirige vers le formulaire
             header('Location: auth');
