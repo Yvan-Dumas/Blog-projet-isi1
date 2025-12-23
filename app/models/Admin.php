@@ -11,7 +11,6 @@ class Admin
         $this->db = Database::getInstance()->getConnection();
     }
 
-
     public function getArticleCount(): int
     {
         $query = $this->db->query("SELECT COUNT(*) FROM Articles");

@@ -11,6 +11,10 @@ class Database {
         );
     }
 
+    //Pour empêcher le clonage
+    private function __clone() {}
+
+    // Pour obtenir l'instance unique
     public static function getInstance(): Database
     {
         if (self::$instance === null) {
