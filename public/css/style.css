@@ -38,6 +38,18 @@
   color-scheme: dark;
 }
 
+@font-face {
+    font-family: 'OpenDyslexic';
+    src: url('../fonts/OpenDyslexic-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* Classe pour police dyslexique */
+.font-dyslexic,
+.font-dyslexic body {
+    font-family: 'OpenDyslexic', Arial, sans-serif !important;
+}
 
 html,
 body {
