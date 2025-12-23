@@ -56,4 +56,63 @@ class Admin
         $query->execute();
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getAllUsersWithRoles(): array
+    {
+        $sql = "SELECT u.id, u.nom_utilisateur, u.email, 
+                GROUP_CONCAT(r.nom_role SEPARATOR ', ') as roles_names
+                FROM Utilisateurs u
+                LEFT JOIN Role_User ru ON u.id = ru.user_id
+                LEFT JOIN Roles r ON ru.role_id = r.id
+                GROUP BY u.id
+                ORDER BY u.id ASC";
+        return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getUserById($id): ?array
+    {
+        $query = $this->db->prepare("SELECT * FROM Utilisateurs WHERE id = :id");
+        $query->bindParam(':id', $id);
+        $query->execute();
+        return $query->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getUserRoles($userId): array
+    {
+        $query = $this->db->prepare("SELECT role_id FROM Role_User WHERE user_id = :id");
+        $query->bindParam(':id', $userId);
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    public function updateUserRoles(int $userId, array $roleIds): bool
+    {
+        try {
+            $this->db->beginTransaction();
+
+            // 1. Delete existing roles
+            $delete = $this->db->prepare("DELETE FROM Role_User WHERE user_id = :uid");
+            $delete->bindParam(':uid', $userId);
+            $delete->execute();
+
+            // 2. Insert new roles
+            $insert = $this->db->prepare("INSERT INTO Role_User (user_id, role_id) VALUES (:uid, :rid)");
+            foreach ($roleIds as $rid) {
+                $insert->bindValue(':uid', $userId);
+                $insert->bindValue(':rid', $rid);
+                $insert->execute();
+            }
+
+            $this->db->commit();
+            return true;
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            return false;
+        }
+    }
+
+    public function getAllRoles(): array
+    {
+        return $this->db->query("SELECT * FROM Roles")->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

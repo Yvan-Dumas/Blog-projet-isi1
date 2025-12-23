@@ -1,0 +1,49 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+	{{ titre_doc }}
+{% endblock %}
+
+{% block content %}
+	<div class="container container-sm pt-5">
+		<div class="card shadow-lg mx-auto" style="max-width: 500px;">
+			<div class="card-body p-4">
+				<h2 class="text-center text-muted mb-4">{{ titre_page }}</h2>
+
+				{% if error %}
+					<div class="alert alert-danger">{{ error }}</div>
+				{% endif %}
+
+				<form action="{{ base_url }}register" method="POST">
+					<div class="mb-3">
+						<label for="username" class="form-label">Nom d'utilisateur</label>
+						<input type="text" class="form-control" id="username" name="username" required>
+					</div>
+
+					<div class="mb-3">
+						<label for="email" class="form-label">Adresse Email</label>
+						<input type="email" class="form-control" id="email" name="email" required>
+					</div>
+
+					<div class="mb-3">
+						<label for="password" class="form-label">Mot de passe</label>
+						<input type="password" class="form-control" id="password" name="password" required>
+					</div>
+
+					<div class="mb-3">
+						<label for="confirm_password" class="form-label">Confirmer le mot de passe</label>
+						<input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+					</div>
+
+					<div class="d-grid gap-2">
+						<button type="submit" class="btn btn-primary">S'inscrire</button>
+					</div>
+				</form>
+
+				<div class="text-center mt-3">
+					<a href="{{ base_url }}auth">Déjà un compte ? Connectez-vous</a>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

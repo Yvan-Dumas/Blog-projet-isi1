@@ -1,0 +1,56 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+	{{ titre_doc }}
+{% endblock %}
+
+{% block content %}
+	<div class="container container-lg pt-5">
+		<h1 class="text-center mb-5">{{ titre_page }}</h1>
+
+		<div class="table-responsive">
+			<table class="table table-hover table-striped align-middle">
+				<thead class="table-dark">
+					<tr>
+						<th>ID</th>
+						<th>Utilisateur</th>
+						<th>Email</th>
+						<th>Rôles</th>
+						<th class="text-end">Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for user in users %}
+						<tr>
+							<td>{{ user.id }}</td>
+							<td>
+								<strong>{{ user.nom_utilisateur }}</strong>
+							</td>
+							<td>{{ user.email }}</td>
+							<td>
+								{% if user.roles_names %}
+									{% for role in user.roles_names|split(', ') %}
+										<span class="badge bg-secondary">{{ role }}</span>
+									{% endfor %}
+								{% else %}
+									<span class="text-muted">Aucun rôle</span>
+								{% endif %}
+							</td>
+							<td class="text-end">
+								<a href="{{ base_url }}AdminUser/Edit/{{ user.id }}" class="btn btn-sm btn-primary">Modifier</a>
+							</td>
+						</tr>
+					{% else %}
+						<tr>
+							<td colspan="5" class="text-center text-muted">Aucun utilisateur trouvé.</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+
+		<div class="text-center mt-4">
+			<a href="{{ base_url }}AdminBoard" class="btn btn-outline-secondary">Retour au tableau de bord</a>
+		</div>
+	</div>
+{% endblock %}

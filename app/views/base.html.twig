@@ -1,18 +1,15 @@
 <!doctype html>
-<html lang="fr" 
-	x-data="{ 
-		dark: document.documentElement.classList.contains('dark'),
-		dyslexic: localStorage.font === 'dyslexic' || false
-		}"
-	x-init="$watch('dark', v => {
-				document.documentElement.classList.toggle('dark', v);
-				localStorage.theme = v ? 'dark' : 'light';
-				});
-			$watch('dyslexic', v => {
-                  document.documentElement.classList.toggle('font-dyslexic', v);
-                  localStorage.font = v ? 'dyslexic' : 'default';
-              });"
-	:class="{ dark, 'font-dyslexic': dyslexic }">
+<html lang="fr" x-data="{
+				dark: document.documentElement.classList.contains('dark'),
+				dyslexic: localStorage.font === 'dyslexic' || false
+				}" x-init="$watch('dark', v => {
+						document.documentElement.classList.toggle('dark', v);
+						localStorage.theme = v ? 'dark' : 'light';
+						});
+					$watch('dyslexic', v => {
+		                  document.documentElement.classList.toggle('font-dyslexic', v);
+		                  localStorage.font = v ? 'dyslexic' : 'default';
+		              });" :class="{ dark, 'font-dyslexic': dyslexic }">
 	<head>
 		<meta charset="UTF-8"/>
 		<title>
@@ -52,9 +49,10 @@ document.documentElement.classList.add('dark');
 							{% if 1 in session.user.roles %}
 								<a href="{{ base_url }}AdminBoard" class="nav-link ms-4">AdminBoard</a>
 							{% endif %}
-								<a href="{{ base_url }}logout" class="nav-link ms-4">Déconnexion</a>
-							{% else %}
-								<a href="{{ base_url }}auth" class="nav-link ms-4">Connexion</a>
+							<a href="{{ base_url }}logout" class="nav-link ms-4">Déconnexion</a>
+						{% else %}
+							<a href="{{ base_url }}auth" class="nav-link ms-4">Connexion</a>
+							<a href="{{ base_url }}register" class="nav-link ms-4">Inscription</a>
 						{% endif %}
 
 					</div>

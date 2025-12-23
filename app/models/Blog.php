@@ -43,4 +43,32 @@ class Blog
         $query->execute();
         return $query->fetchAll(PDO::FETCH_COLUMN);
     }
+    public function createUser(string $username, string $email, string $password): bool
+    {
+        try {
+            $this->db->beginTransaction();
+
+            $query = $this->db->prepare("INSERT INTO Utilisateurs (nom_utilisateur, email, mot_de_passe) VALUES (:nom, :email, :mdp)");
+            $query->bindParam(':nom', $username);
+            $query->bindParam(':email', $email);
+            $query->bindParam(':mdp', $password);
+
+            if ($query->execute()) {
+                $userId = $this->db->lastInsertId();
+                // Assign Default Role 3 (Contributor)
+                $roleQuery = $this->db->prepare("INSERT INTO Role_User (user_id, role_id) VALUES (:uid, 3)");
+                $roleQuery->bindParam(':uid', $userId);
+                $roleQuery->execute();
+
+                $this->db->commit();
+                return true;
+            }
+
+            $this->db->rollBack();
+            return false;
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            return false;
+        }
+    }
 }

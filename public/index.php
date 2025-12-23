@@ -41,6 +41,12 @@ if (preg_match('#^/article/(.+)$#', $requestUri, $matches)) {
     $controller->article($slug);
     exit;
 }
+
+if (preg_match('#^/AdminUser/Edit/([0-9]+)$#', $requestUri, $matches)) {
+    $id = (int) $matches[1];
+    $AdminController->editUserRoles($id);
+    exit;
+}
 // Sinon
 switch ($requestUri) {
     case '/':
@@ -56,6 +62,9 @@ switch ($requestUri) {
     case '/login':
         $authController->login();
         break;
+    case '/register':
+        $authController->register();
+        break;
     case '/logout':
         $authController->logout();
         break;
@@ -64,6 +73,9 @@ switch ($requestUri) {
         break;
     case '/activity':
         $AdminController->activity();
+        break;
+    case '/AdminUsers':
+        $AdminController->usersList();
         break;
     default:
         http_response_code(404);

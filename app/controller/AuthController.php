@@ -74,4 +74,45 @@ class AuthController
         header('Location: ' . $this->twig->getGlobals()['base_url']);
         exit;
     }
+    public function register(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $username = trim($_POST['username'] ?? '');
+            $email = trim($_POST['email'] ?? '');
+            $password = $_POST['password'] ?? '';
+            $confirmPassword = $_POST['confirm_password'] ?? '';
+
+            if (empty($username) || empty($email) || empty($password)) {
+                $this->renderRegister("Tous les champs sont obligatoires.");
+                return;
+            }
+
+            if ($password !== $confirmPassword) {
+                $this->renderRegister("Les mots de passe ne correspondent pas.");
+                return;
+            }
+
+            // Hash password
+            $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+
+            if ($this->blogModel->createUser($username, $email, $hashedPassword)) {
+                // Succès -> Redirection vers login
+                header('Location: ' . $this->twig->getGlobals()['base_url'] . 'auth');
+                exit;
+            } else {
+                $this->renderRegister("Erreur lors de l'inscription (Email ou Pseudo déjà pris ?).");
+            }
+        } else {
+            $this->renderRegister();
+        }
+    }
+
+    private function renderRegister(?string $error = null): void
+    {
+        echo $this->twig->render('register.twig', [
+            'titre_doc' => "Blog - Inscription",
+            'titre_page' => "Créer un compte",
+            'error' => $error
+        ]);
+    }
 }
