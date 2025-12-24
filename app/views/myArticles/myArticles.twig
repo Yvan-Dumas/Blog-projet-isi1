@@ -9,7 +9,7 @@
 
 	<!-- Bouton créer un nouvel article -->
 	<div class="text-end mb-4 me-4">
-		<a href="{{ base_url }}article/create" class="btn btn-success">
+		<a href="{{ base_url }}myArticles/create" class="btn btn-success">
 			+ Créer un nouvel article
 		</a>
 	</div>
@@ -35,9 +35,9 @@
 								{{article.statut}}</p>
 
 							<!-- Boutons -->
-							<div class="mt-auto d-flex justify-content-between">
-								<a href="{{ base_url }}article/{{ article.slug }}" class="btn btn-primary btn-sm">Lire</a>
-								<a href="{{ base_url }}article/edit/{{ article.id }}" class="btn btn-warning btn-sm">Modifier</a>
+							<div class="mt-auto d-flex justify-content-end">
+								<a href="{{ base_url }}article/{{ article.slug }}" class="btn btn-primary btn-sm me-2">Lire</a>
+								<a href="{{ base_url }}article/edit/{{ article.id }}" class="btn btn-warning btn-sm me-2">Modifier</a>
 								<a href="{{ base_url }}article/delete/{{ article.id }}" class="btn btn-danger btn-sm">Supprimer</a>
 							</div>
 						</div>

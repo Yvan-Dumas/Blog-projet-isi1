@@ -8,7 +8,7 @@
   <div class="mx-4">
     <p class="mb-3">Date de mise à jour : {{ article["date_mise_a_jour"] }}</p>
     <img class="mb-3" src="image/{{ article[0].image|default('default.png') }}" alt="pas d'image disponible" >
-    <p >{{ article['contenu'] }}</p>
+    <p >{{ article['contenu'] | raw }}</p>
     
   </div>
 {% endblock %}

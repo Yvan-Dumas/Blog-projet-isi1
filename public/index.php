@@ -78,10 +78,13 @@ switch ($requestUri) {
         $AdminController->usersList();
         break;
     case '/myArticles':
-        $controller->myArticles();
+        $controller->renderMyArticles();
         break;
     case '/myArticles/create':
-        $controller->createArticle();
+        $controller->renderCreateArticle();
+        break;
+    case '/myArticles/storeArticle':
+        $controller->storeArticle();
         break;
     default:
         http_response_code(404);

@@ -72,11 +72,49 @@ class Blog
         }
     }
 
-    public function getArticlesByUser(int $userId): array {
-    $query = $this->db->prepare("SELECT * FROM articles WHERE utilisateur_id = :id ORDER BY date_mise_a_jour DESC");
+    /* Fonctions pour l'onglet Mes Articles (création, édition, suppression) */
+    public function getArticlesByUser(int $userId): array
+    {
+        $query = $this->db->prepare("SELECT * FROM articles WHERE utilisateur_id = :id ORDER BY date_mise_a_jour DESC");
         $query->bindParam(':id', $userId);
         $query->execute();
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getAllTags(): array
+    {
+        $query = $this->db->prepare("SELECT * FROM tags ORDER BY nom_tag");
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function createArticle(array $data): int
+    {
+        $query = $this->db->prepare("
+        INSERT INTO Articles (utilisateur_id, titre, slug, contenu, image_une, statut, date_creation, date_mise_a_jour)
+        VALUES (:id_utilisateur, :titre, :slug, :contenu, :image_une, :statut, NOW(), NOW())
+    ");
+
+        $query->execute([
+            ':id_utilisateur' => $data['id_utilisateur'],
+            ':titre' => $data['titre'],
+            ':slug' => $data['slug'],
+            ':contenu' => $data['contenu'],
+            ':image_une' => $data['image_une'] ?? null, // si pas d'image
+            ':statut' => $data['statut']
+        ]);
+
+        return (int) $this->db->lastInsertId();
+    }
+
+    // Ajoute un tag à un article
+    public function addTagToArticle(int $articleId, int $tagId): void {
+        $query = $this->db->prepare("
+            INSERT INTO article_tag (article_id, tag_id) VALUES (:articleId, :tagId)
+        ");
+        $query->execute([
+            ':articleId' => $articleId,
+            ':tagId' => $tagId
+        ]);
+    }
 }

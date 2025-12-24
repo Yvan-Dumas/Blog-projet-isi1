@@ -1,0 +1,56 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+	{{ titre_doc }}
+{% endblock %}
+
+{% block content %}
+	<h1 class="text-center my-4">{{ titre_page }}</h1>
+	<form
+		action="{{ base_url }}myArticles/storeArticle" method="post" class="mx-auto w-75 mb-5" enctype="multipart/form-data">
+		<!-- Titre de l'article -->
+		<div class="mb-3">
+			<label for="titre" class="form-label">Titre</label>
+			<input type="text" class="form-control" id="titre" name="titre" required>
+		</div>
+
+		<!-- Image à la une -->
+		<div class="mb-3">
+			<label for="image" class="form-label">Image à la une</label>
+			<input type="file" id="image" name="image" class="form-control" accept="image/*">
+		</div>
+
+		<!-- Contenu de l'article -->
+		<div class="mb-3">
+			<label for="contenu" class="form-label">Contenu</label>
+			<textarea id="contenu" name="contenu" class="form-control" rows="10"></textarea>
+		</div>
+
+		<!-- Tags -->
+		<div class="mb-3">
+			<label for="tags" class="form-label">Tags (facultatif)</label>
+			<select id="tags" name="tags[]" class="form-select" multiple>
+				{% for tag in tags %}
+					<option value="{{ tag.id }}">{{ tag.nom_tag }}</option>
+				{% endfor %}
+			</select>
+			<small class="text-muted">Maintenez Ctrl (Windows) ou Cmd (Mac) pour sélectionner plusieurs tags.</small>
+		</div>
+
+		<!-- Bouton de soumission -->
+		<button type="submit" class="btn btn-success">Créer l'article</button>
+	</form>
+</div>{% endblock %}{% block scripts %}
+{{ parent() }}
+<!-- TinyMCE WYSIWYG -->
+<script src="https://cdn.tiny.cloud/1/bgt090zplr2r9etraoq7cn8dfectzhgvnegr4wm9qnqkxqjz/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+tinymce.init({
+    selector: '#contenu',
+    height: 400,
+    menubar: true,
+    plugins: 'advlist autolink lists link image charmap preview anchor searchreplace code fullscreen insertdatetime media table help wordcount',
+    toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | removeformat | code | help',
+    content_style: "body { font-family:Arial,sans-serif; font-size:14px }"
+});
+</script>{% endblock %}
