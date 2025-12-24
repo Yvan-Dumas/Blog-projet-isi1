@@ -77,6 +77,12 @@ switch ($requestUri) {
     case '/AdminUsers':
         $AdminController->usersList();
         break;
+    case '/myArticles':
+        $controller->myArticles();
+        break;
+    case '/myArticles/create':
+        $controller->createArticle();
+        break;
     default:
         http_response_code(404);
         echo "Page non trouvée - URI : $requestUri";

@@ -46,7 +46,7 @@
 								<a href="{{ base_url }}AdminBoard" class="nav-link ms-4">AdminBoard</a>
 							{% endif %}
 							{% if (2 in session.user.roles) or (3 in session.user.roles)  %}
-								<a href="{{ base_url }}MesArticles" class="nav-link ms-4">Mes Articles</a>
+								<a href="{{ base_url }}myArticles" class="nav-link ms-4">Mes Articles</a>
 							{% endif %}
 							<a href="{{ base_url }}logout" class="nav-link ms-4">Déconnexion</a>
 						{% else %}

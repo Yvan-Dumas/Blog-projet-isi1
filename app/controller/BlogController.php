@@ -31,7 +31,6 @@ class BlogController
 
     }
 
-
     public function article($slug): void
     {
 
@@ -44,5 +43,23 @@ class BlogController
 
         ]);
 
+    }
+
+
+    /* Fonctions pour l'onglet Mes Articles (création, édition, suppression) */
+    public function myArticles(): void {
+        // Vérifie que l'utilisateur est connecté
+        if (!isset($_SESSION['user'])) {
+            header('Location: ' . $this->twig->getGlobals()['base_url']); //redirection vers l'accueil
+            exit;
+        }
+
+        $userId = $_SESSION['user']['id'];
+        $articles = $this->BlogModel->getArticlesByUser($userId);
+        echo $this->twig->render('myArticles/myArticles.twig', [
+            'titre_doc' => "Blog - Mes Articles",
+            'titre_page' => 'Mes Articles',
+            'articles' => $articles
+        ]);
     }
 }

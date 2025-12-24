@@ -71,4 +71,12 @@ class Blog
             return false;
         }
     }
+
+    public function getArticlesByUser(int $userId): array {
+    $query = $this->db->prepare("SELECT * FROM articles WHERE utilisateur_id = :id ORDER BY date_mise_a_jour DESC");
+        $query->bindParam(':id', $userId);
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 }
