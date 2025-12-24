@@ -115,4 +115,14 @@ class Admin
     {
         return $this->db->query("SELECT * FROM Roles")->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getTagsStats(): array
+    {
+        $sql = "SELECT t.id, t.nom_tag, COUNT(at.article_id) as article_count
+                FROM Tags t
+                LEFT JOIN Article_Tag at ON t.id = at.tag_id
+                GROUP BY t.id
+                ORDER BY article_count DESC";
+        return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

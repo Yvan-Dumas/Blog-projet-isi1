@@ -22,7 +22,8 @@ class AdminController
         echo $this->twig->render('adminBoard.twig', [
             'titre_doc' => "Blog - AdminBoard",
             'titre_page' => 'Tableau de bord',
-            'stats' => $stats
+            'stats' => $stats,
+            'tags' => $this->adminModel->getTagsStats()
         ]);
     }
 

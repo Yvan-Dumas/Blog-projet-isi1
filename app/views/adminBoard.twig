@@ -43,6 +43,26 @@
 		</div>
 	</div>
 
+	<!-- Tags Stats -->
+	<div class="mx-5 px-5 mt-5">
+		<h4 class="mb-3">Popularité des Tags</h4>
+		<div class="card">
+			<div class="card-body">
+				<div class="d-flex flex-wrap gap-3">
+					{% for tag in tags %}
+						<div class="d-flex align-items-center border rounded p-2 px-3">
+							<span class="fw-bold me-2 text-muted">{{ tag.nom_tag }}</span>
+							<span class="badge bg-primary rounded-pill">{{ tag.article_count }}
+								articles</span>
+						</div>
+					{% else %}
+						<p class="text-muted mb-0">Aucun tag trouvé.</p>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<div class="text-center my-5">
 		<a href="{{ base_url }}activity" class="btn btn-primary btn-lg me-3">Voir le fil d'activité complet</a>
 		<a href="{{ base_url }}AdminUsers" class="btn btn-secondary btn-lg">Gérer les utilisateurs</a>
