@@ -1,14 +1,39 @@
 {% extends "base.html.twig" %}
 
-{% block title %}{{ titre_doc }}{% endblock %}
+{% block title %}
+	{{ titre_doc }}
+{% endblock %}
 
 {% block content %}
-  <h1 class="text-center my-4">{{ article["titre"] }}</h1>
+	<h1 class="text-center my-4">{{ article["titre"] }}</h1>
 
-  <div class="mx-4">
-    <p class="mb-3">Date de mise à jour : {{ article["date_mise_a_jour"] }}</p>
-    <img class="mb-3" src="image/{{ article[0].image|default('default.png') }}" alt="pas d'image disponible" >
-    <p >{{ article['contenu'] | raw }}</p>
-    
-  </div>
+	<div class="mx-4">
+		<p class="mb-3">Date de mise à jour :
+			{{ article["date_mise_a_jour"] }}</p>
+		<img class="mb-3" src="image/{{ article[0].image|default('default.png') }}" alt="pas d'image disponible">
+		<p>{{ article['contenu'] | raw }}</p>
+
+		<h3 class="mt-5 mb-4 border-bottom pb-2">Commentaires</h3>
+
+		<div class="comments-section mb-5">
+			{% if comments %}
+				{% for comment in comments %}
+					<div class="card mb-3 shadow-sm">
+						<div class="card-body">
+							<div class="d-flex justify-content-between align-items-center mb-2">
+								<h5 class="card-title mb-0">{{ comment.nom_auteur }}</h5>
+								<small class="text-muted">{{ comment.date_commentaire|date('d/m/Y H:i') }}</small>
+							</div>
+							<p class="card-text text-muted">{{ comment.contenu|nl2br }}</p>
+							<!-- #nl2br transforme les retours à la ligne en balises <br> -->
+						</div>
+					</div>
+				{% endfor %}
+			{% else %}
+				<div class="alert alert-secondary" role="alert">
+					Aucun commentaire pour cet article. Soyez le premier à commenter !
+				</div>
+			{% endif %}
+		</div>
+	</div>
 {% endblock %}

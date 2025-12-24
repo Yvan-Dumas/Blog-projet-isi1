@@ -34,12 +34,16 @@ class BlogController
     {
 
         $article = $this->BlogModel->getArticleBySlug($slug);
-        echo $this->twig->render('article.twig', [
 
+
+
+        $comments = $this->BlogModel->getCommentsByArticleId($article['id']);
+
+        echo $this->twig->render('article.twig', [
             'article' => $article,
+            'comments' => $comments,
             'titre_doc' => 'Article',
             'titre_page' => 'Détail de l\'article',
-
         ]);
     }
 

@@ -108,7 +108,8 @@ class Blog
     }
 
     // Ajoute un tag à un article
-    public function addTagToArticle(int $articleId, int $tagId): void {
+    public function addTagToArticle(int $articleId, int $tagId): void
+    {
         $query = $this->db->prepare("
             INSERT INTO article_tag (article_id, tag_id) VALUES (:articleId, :tagId)
         ");
@@ -116,5 +117,17 @@ class Blog
             ':articleId' => $articleId,
             ':tagId' => $tagId
         ]);
+    }
+    public function getCommentsByArticleId(int $articleId): array
+    {
+        $query = $this->db->prepare("
+            SELECT * FROM Commentaires 
+            WHERE article_id = :id 
+            AND statut = 'Approuvé' 
+            ORDER BY date_commentaire DESC
+        ");
+        $query->bindParam(':id', $articleId);
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
     }
 }
