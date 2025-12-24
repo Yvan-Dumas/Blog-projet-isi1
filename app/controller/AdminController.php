@@ -1,6 +1,8 @@
 <?php
 
 require_once __DIR__ . '/../models/Admin.php';
+
+require_once __DIR__ . '/../Logger.php';
 class AdminController
 {
     private \Twig\Environment $twig;
@@ -62,6 +64,15 @@ class AdminController
             // Let's assume passed array is correct.
 
             if ($this->adminModel->updateUserRoles($id, $roles)) {
+                Logger::getInstance()->security(
+                    'Mise à jour des rôles utilisateur',
+                    [
+                        'admin_id' => $_SESSION['user']['id'],
+                        'user_id' => $id,
+                        'new_roles' => $roles
+                    ]
+                );
+
                 // Redirect back to list
                 header('Location: ' . $this->twig->getGlobals()['base_url'] . 'AdminUsers');
                 exit;
