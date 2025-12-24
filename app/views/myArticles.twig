@@ -1,0 +1,25 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+	{{ titre_doc }}
+{% endblock %}
+
+{% block content %}
+	<h1 class="text-center my-4">{{ titre_page }}</h1>
+
+	<div class="p-5">
+		<div class="row g-4">
+			{% for item in articles | sort %}
+				<div class="col-md-3">
+					<div class="card h-100 shadow-sm">
+						<div class="card-body d-flex flex-column">
+							<h5 class="card-title">{{ item.titre }}</h5>
+							<p class="card-text text-muted">{{ item.date_mise_a_jour }}</p>
+							<a href="{{ base_url }}article/{{ item.slug }}" class="btn btn-primary mt-auto">Lire l'article</a>
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+{% endblock %}

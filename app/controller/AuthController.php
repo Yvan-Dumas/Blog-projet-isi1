@@ -35,7 +35,6 @@ class AuthController
             if ($user && password_verify($password, $user['mot_de_passe'])) {
                 // Connexion réussie
                 $roles = $this->blogModel->getUserRoles($user['id']);
-
                 $_SESSION['user'] = [
                     'id' => $user['id'],
                     'nom_utilisateur' => $user['nom_utilisateur'],
