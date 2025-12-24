@@ -65,6 +65,15 @@
 
 	<div class="text-center my-5">
 		<a href="{{ base_url }}activity" class="btn btn-primary btn-lg me-3">Voir le fil d'activité complet</a>
+		<a href="{{ base_url }}AdminComments" class="btn btn-warning btn-lg me-3 position-relative">
+			Gérer les commentaires
+			{% if stats.nbCommentaires > 0 %}
+				<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+					{{ stats.nbCommentaires }}
+					<span class="visually-hidden">commentaires en attente</span>
+				</span>
+			{% endif %}
+		</a>
 		<a href="{{ base_url }}AdminUsers" class="btn btn-secondary btn-lg">Gérer les utilisateurs</a>
 	</div>
 {% endblock %}

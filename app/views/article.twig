@@ -35,5 +35,40 @@
 				</div>
 			{% endif %}
 		</div>
+
+
+		<!-- Formulaire d'ajout de commentaire -->
+		<div class="card mb-4">
+			<div class="card-body">
+				<h5 class="card-title">Laisser un commentaire</h5>
+				<form action="{{ base_url }}comment/submit" method="POST">
+					<input type="hidden" name="article_id" value="{{ article.id }}">
+					<input type="hidden" name="article_slug" value="{{ article.slug }}">
+
+					{% if not session.user %}
+						<div class="row mb-3">
+							<div class="col-md-6">
+								<label for="author_name" class="form-label">Nom *</label>
+								<input type="text" class="form-control" id="author_name" name="author_name" required>
+							</div>
+							<div class="col-md-6">
+								<label for="author_email" class="form-label">Email *</label>
+								<input type="email" class="form-control" id="author_email" name="author_email" required>
+							</div>
+						</div>
+					{% else %}
+						<p class="mb-3 text-muted">Connecté en tant que
+							<strong>{{ session.user.nom_utilisateur }}</strong>
+						</p>
+					{% endif %}
+
+					<div class="mb-3">
+						<label for="content" class="form-label">Votre message *</label>
+						<textarea class="form-control" id="content" name="content" rows="3" required></textarea>
+					</div>
+					<button type="submit" class="btn btn-primary">Envoyer</button>
+				</form>
+			</div>
+		</div>
 	</div>
 {% endblock %}

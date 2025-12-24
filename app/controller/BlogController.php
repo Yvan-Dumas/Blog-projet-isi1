@@ -125,4 +125,40 @@ class BlogController
         header('Location: ' . $this->twig->getGlobals()['base_url']); //redirection vers l'accueil
         exit;
     }
+    public function postComment()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $articleId = $_POST['article_id'] ?? null;
+            $slug = $_POST['article_slug'] ?? '';
+            $content = trim($_POST['content'] ?? '');
+
+            // Validation simple
+            if (!$articleId || empty($content)) {
+                // Pour simplifier, on redirige juste (idéalement : message d'erreur en session)
+                header('Location: ' . $this->twig->getGlobals()['base_url'] . 'article/' . $slug);
+                exit;
+            }
+
+            // Gestion Utilisateur Connecté vs Invité
+            if (isset($_SESSION['user'])) {
+                $authorName = $_SESSION['user']['nom_utilisateur'];
+                $authorEmail = $_SESSION['user']['email'];
+            } else {
+                $authorName = trim($_POST['author_name'] ?? '');
+                $authorEmail = trim($_POST['author_email'] ?? '');
+
+                if (empty($authorName) || empty($authorEmail)) {
+                    header('Location: ' . $this->twig->getGlobals()['base_url'] . 'article/' . $slug);
+                    exit;
+                }
+            }
+
+            // Enregistrement
+            $this->BlogModel->createComment($articleId, $authorName, $authorEmail, $content);
+
+            // Redirection
+            header('Location: ' . $this->twig->getGlobals()['base_url'] . 'article/' . $slug);
+            exit;
+        }
+    }
 }

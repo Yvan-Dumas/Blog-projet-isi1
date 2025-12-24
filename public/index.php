@@ -47,6 +47,21 @@ if (preg_match('#^/AdminUser/Edit/([0-9]+)$#', $requestUri, $matches)) {
     $AdminController->editUserRoles($id);
     exit;
 }
+
+// Routes Modération Commentaires
+if (preg_match('#^/AdminComment/Approve/([0-9]+)$#', $requestUri, $matches)) {
+    $AdminController->updateCommentStatusAction((int) $matches[1], 'Approuvé');
+    exit;
+}
+if (preg_match('#^/AdminComment/Reject/([0-9]+)$#', $requestUri, $matches)) {
+    $AdminController->updateCommentStatusAction((int) $matches[1], 'Rejeté');
+    exit;
+}
+if (preg_match('#^/AdminComment/Delete/([0-9]+)$#', $requestUri, $matches)) {
+    $AdminController->deleteCommentAction((int) $matches[1]);
+    exit;
+}
+
 // Sinon
 switch ($requestUri) {
     case '/':
@@ -77,6 +92,9 @@ switch ($requestUri) {
     case '/AdminUsers':
         $AdminController->usersList();
         break;
+    case '/AdminComments':
+        $AdminController->commentsList();
+        break;
     case '/myArticles':
         $controller->renderMyArticles();
         break;
@@ -85,6 +103,9 @@ switch ($requestUri) {
         break;
     case '/myArticles/storeArticle':
         $controller->storeArticle();
+        break;
+    case '/comment/submit':
+        $controller->postComment();
         break;
     default:
         http_response_code(404);

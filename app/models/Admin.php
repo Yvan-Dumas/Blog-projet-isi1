@@ -125,4 +125,34 @@ class Admin
                 ORDER BY article_count DESC";
         return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /* --- Gestion des Commentaires --- */
+
+    public function getAllComments(): array
+    {
+        // On récupère le commentaire + le titre de l'article associé
+        $sql = "SELECT c.*, a.titre as article_titre 
+                FROM Commentaires c
+                LEFT JOIN Articles a ON c.article_id = a.id
+                ORDER BY c.date_commentaire DESC";
+        return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getPendingCommentsCount(): int
+    {
+        $stmt = $this->db->query("SELECT COUNT(*) FROM Commentaires WHERE statut = 'En attente'");
+        return (int) $stmt->fetchColumn();
+    }
+
+    public function updateCommentStatus(int $id, string $status): bool
+    {
+        $stmt = $this->db->prepare("UPDATE Commentaires SET statut = :status WHERE id = :id");
+        return $stmt->execute([':status' => $status, ':id' => $id]);
+    }
+
+    public function deleteComment(int $id): bool
+    {
+        $stmt = $this->db->prepare("DELETE FROM Commentaires WHERE id = :id");
+        return $stmt->execute([':id' => $id]);
+    }
 }

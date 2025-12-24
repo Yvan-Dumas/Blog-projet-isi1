@@ -130,4 +130,17 @@ class Blog
         $query->execute();
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
+    public function createComment(int $articleId, string $authorName, ?string $authorEmail, string $content): bool
+    {
+        $query = $this->db->prepare("
+            INSERT INTO Commentaires (article_id, nom_auteur, email_auteur, contenu, statut, date_commentaire)
+            VALUES (:articleId, :nom, :email, :contenu, 'En attente', NOW())
+        ");
+        return $query->execute([
+            ':articleId' => $articleId,
+            ':nom' => $authorName,
+            ':email' => $authorEmail,
+            ':contenu' => $content
+        ]);
+    }
 }

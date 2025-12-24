@@ -1,0 +1,79 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+	{{ titre_doc }}
+{% endblock %}
+
+{% block content %}
+	<div class="container my-5">
+		<div class="d-flex justify-content-between align-items-center mb-4">
+			<h1>{{ titre_page }}</h1>
+			<a href="{{ base_url }}AdminBoard" class="btn btn-secondary">Retour au tableau de bord</a>
+		</div>
+
+		{% if comments %}
+			<div class="table-responsive shadow-sm rounded">
+				<table class="table table-hover align-middle mb-0 bg-transparent">
+					<thead class="table-light">
+						<tr>
+							<th scope="col">Date</th>
+							<th scope="col">Auteur</th>
+							<th scope="col">Article</th>
+							<th scope="col" style="width: 30%;">Commentaire</th>
+							<th scope="col">Statut</th>
+							<th scope="col" class="text-end">Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for comment in comments %}
+							<tr>
+								<td class="text-nowrap">{{ comment.date_commentaire|date('d/m/Y H:i') }}</td>
+								<td>
+									<strong>{{ comment.nom_auteur }}</strong><br>
+									<small class="text-muted">{{ comment.email_auteur }}</small>
+								</td>
+								<td>{{ comment.article_titre }}</td>
+								<td>
+									<small>{{ comment.contenu|slice(0, 100) }}...</small>
+								</td>
+								<td>
+									{% if comment.statut == 'En attente' %}
+										<span class="badge bg-warning text-dark">En attente</span>
+									{% elseif comment.statut == 'Approuvé' %}
+										<span class="badge bg-success">Approuvé</span>
+									{% else %}
+										<span class="badge bg-danger">Rejeté</span>
+									{% endif %}
+								</td>
+								<td class="text-end">
+									{% if comment.statut != 'Approuvé' %}
+										<a href="{{ base_url }}AdminComment/Approve/{{ comment.id }}" class="btn btn-sm btn-success" title="Approuver">
+
+											OK
+										</a>
+									{% endif %}
+
+									{% if comment.statut != 'Rejeté' %}
+										<a href="{{ base_url }}AdminComment/Reject/{{ comment.id }}" class="btn btn-sm btn-warning" title="Rejeter">
+
+											Non
+										</a>
+									{% endif %}
+
+									<a href="{{ base_url }}AdminComment/Delete/{{ comment.id }}" class="btn btn-sm btn-danger ms-2" onclick="return confirm('Supprimer ce commentaire ?');" title="Supprimer">
+
+										Supprimer
+									</a>
+								</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		{% else %}
+			<div class="alert alert-info text-center">
+				Aucun commentaire à modérer.
+			</div>
+		{% endif %}
+	</div>
+{% endblock %}

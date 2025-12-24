@@ -99,4 +99,32 @@ class AdminController
             'allRoles' => $allRoles
         ]);
     }
+    public function commentsList(): void
+    {
+        $comments = $this->adminModel->getAllComments();
+        echo $this->twig->render('adminComments.twig', [
+            'titre_doc' => "Blog - Modération Commentaires",
+            'titre_page' => "Gestion des commentaires",
+            'comments' => $comments
+        ]);
+    }
+
+    public function updateCommentStatusAction(int $id, string $status): void
+    {
+        // Sécurité : vérifier que le statut est valide
+        $validStatuses = ['Approuvé', 'Rejeté', 'En attente'];
+        if (in_array($status, $validStatuses)) {
+            $this->adminModel->updateCommentStatus($id, $status);
+        }
+        // Redirection vers la liste
+        header('Location: ' . $this->twig->getGlobals()['base_url'] . 'AdminComments');
+        exit;
+    }
+
+    public function deleteCommentAction(int $id): void
+    {
+        $this->adminModel->deleteComment($id);
+        header('Location: ' . $this->twig->getGlobals()['base_url'] . 'AdminComments');
+        exit;
+    }
 }
