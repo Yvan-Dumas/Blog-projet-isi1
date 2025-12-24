@@ -51,6 +51,10 @@
   font-family: 'OpenDyslexic', Arial, sans-serif !important;
 }
 
+.navbar .font-btn {
+  color: var(--nav-text) !important;
+}
+
 html,
 body {
   height: 100%;
