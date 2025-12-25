@@ -47,17 +47,21 @@
 			<small class="text-muted">Maintenez Ctrl (Windows) ou Cmd (Mac) pour sélectionner plusieurs tags.</small>
 		</div>
 
-		<!-- Statut (visible seulement pour les éditeurs) -->
-		{% if 2 in session.user.roles %}
-			<div class="mb-3">
-				<label for="statut" class="form-label">Statut de l'article</label>
-				<select id="statut" name="statut" class="form-select">
-					<option value="Brouillon">Brouillon</option>
+        <!-- Statut -->
+		<div class="mb-3">
+			<label for="statut" class="form-label">Statut de l'article</label>
+			<select id="statut" name="statut" class="form-select">
+
+				<option value="Brouillon">Brouillon</option>
+				<option value="Archivé">Archivé</option>
+
+				{# Seuls les éditeurs peuvent publier #}
+				{% if 2 in session.user.roles %}
 					<option value="Publié">Publié</option>
-                    <option value="Archivé">Archivé</option>
-				</select>
-			</div>
-		{% endif %}
+				{% endif %}
+
+			</select>
+		</div>
 
 
 		<button type="submit" class="btn btn-primary">Mettre à jour l'article</button>

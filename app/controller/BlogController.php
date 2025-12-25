@@ -120,12 +120,20 @@ class BlogController
         }
 
         $contenu = $_POST['contenu'];
-        // Définit le statut selon le rôle
+        // Définition des statuts autorisés selon le rôle
         if (in_array(2, $_SESSION['user']['roles'])) {
-            // Editeur : statut choisi dans le formulaire
-            $statut = $_POST['statut'] ?? 'Brouillon';
+            // Éditeur
+            $validStatuses = ['Brouillon', 'Publié', 'Archivé'];
         } else {
-            // Contributeur : toujours Brouillon
+            // Contributeur
+            $validStatuses = ['Brouillon', 'Archivé'];
+        }
+
+        // Statut demandé
+        $statut = $_POST['statut'] ?? 'Brouillon';
+
+        // Sécurisation finale
+        if (!in_array($statut, $validStatuses)) {
             $statut = 'Brouillon';
         }
 
@@ -170,7 +178,7 @@ class BlogController
             'statut' => $statut
         ]);
 
-        header('Location: ' . $this->twig->getGlobals()['base_url']); //redirection vers l'accueil
+        header('Location: ' . $this->twig->getGlobals()['base_url'] . '/myArticles'); //redirection
         exit;
     }
 
@@ -186,7 +194,7 @@ class BlogController
         // Récupère l'article par slug
         $article = $this->BlogModel->getArticleBySlug($slug);
         if (!$article) {
-            header('Location: ' . $this->twig->getGlobals()['base_url']); //redirection vers l'accueil
+            header('Location: ' . $this->twig->getGlobals()['base_url'] . '/myArticles'); //redirection
             exit;
         }
 
@@ -226,7 +234,7 @@ class BlogController
         // Récupère l'article existant
         $article = $this->BlogModel->getArticleBySlug($slug);
         if (!$article) {
-            header('Location: ' . $this->twig->getGlobals()['base_url']);
+            header('Location: ' . $this->twig->getGlobals()['base_url'] . '/myArticles');
             exit;
         }
 
@@ -262,14 +270,23 @@ class BlogController
             $imagePath = 'image/articles/' . $fileName;
         }
 
-        // Définit le statut selon le rôle
+        // Définition des statuts autorisés selon le rôle
         if (in_array(2, $_SESSION['user']['roles'])) {
-            // Editeur : statut choisi dans le formulaire
-            $statut = $_POST['statut'] ?? 'Brouillon';
+            // Éditeur
+            $validStatuses = ['Brouillon', 'Publié', 'Archivé'];
         } else {
-            // Contributeur : toujours Brouillon
+            // Contributeur
+            $validStatuses = ['Brouillon', 'Archivé'];
+        }
+
+        // Statut demandé
+        $statut = $_POST['statut'] ?? 'Brouillon';
+
+        // Sécurisation finale
+        if (!in_array($statut, $validStatuses)) {
             $statut = 'Brouillon';
         }
+
 
         // Mise à jour de l'article en base
         $this->BlogModel->updateArticle($article['id'], [
@@ -302,7 +319,7 @@ class BlogController
         ]);
 
         // Redirection après modification
-        header('Location: ' . $this->twig->getGlobals()['base_url']);
+        header('Location: ' . $this->twig->getGlobals()['base_url'] . '/myArticles');
         exit;
     }
 
@@ -322,7 +339,7 @@ class BlogController
 
         $article = $this->BlogModel->getArticleBySlug($slug);
         if (!$article) {
-            header('Location: ' . $this->twig->getGlobals()['base_url']); //redirection vers l'accueil
+            header('Location: ' . $this->twig->getGlobals()['base_url'] . '/myArticles'); //redirection
             exit;
         }
 
@@ -345,7 +362,7 @@ class BlogController
             ]
         ]);
 
-        header('Location: ' . $this->twig->getGlobals()['base_url']); //redirection vers l'accueil
+        header('Location: ' . $this->twig->getGlobals()['base_url'] . '/myArticles'); //redirection
         exit;
     }
     /* =============================================================== */
