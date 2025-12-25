@@ -36,7 +36,7 @@ class Logger
         return self::$instance;
     }
 
-    // Log applicatif standard
+    // Log d'info
     public function info(string $message, array $context = []): void
     {
         $this->write('INFO', $message, $context, 'app');
