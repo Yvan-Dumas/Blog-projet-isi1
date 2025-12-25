@@ -56,7 +56,7 @@ class BlogController
     }
 
 
-    /* === Fonctions pour l'onglet Mes Articles (création, édition, suppression) === */
+    /* ====== Fonctions pour l'onglet Mes Articles (création, édition, suppression) ====== */
 
     // Fonction permettant de savoir si l'utilisateur est connecté et si c'est un éditeur ou un contributeur
     private function userCanCreateArticle(): bool
@@ -68,8 +68,8 @@ class BlogController
         $userRoles = $_SESSION['user']['roles'] ?? [];
 
         if (in_array(2, $userRoles) || in_array(3, $userRoles)) {
-        return true;
-    }
+            return true;
+        }
         return false;
     }
 
@@ -158,10 +158,24 @@ class BlogController
             $this->BlogModel->addTagToArticle($articleId, (int) $tagId);
         }
 
+        $logger = Logger::getInstance();
+        $logger->info("Nouvel article créé", [
+            'article_id'   => $articleId,
+            'titre'        => $titre,
+            'slug'         => $slug,
+            'utilisateur'  => [
+                'id' => $userId,
+                'nom' => $_SESSION['user']['nom_utilisateur'] ?? 'inconnu'
+            ],
+            'tags' => $tags,
+            'image' => $imagePath,
+            'statut' => $statut
+        ]);
+
         header('Location: ' . $this->twig->getGlobals()['base_url']); //redirection vers l'accueil
         exit;
     }
-    /*=== === */
+    /* =============================================================== */
 
 
     public function postComment()
