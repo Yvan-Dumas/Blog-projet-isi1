@@ -130,7 +130,7 @@ switch ($requestUri) {
     case '/AdminUsers':
         $AdminController->usersList();
         break;
-    case '/AdminCommentSs':
+    case '/AdminComments':
         $AdminController->commentsList();
         break;
     case '/AdminArticles':

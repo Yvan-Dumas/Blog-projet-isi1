@@ -128,8 +128,14 @@ class Admin
 
     public function createTag(string $tagName): bool
     {
-        $stmt = $this->db->prepare("INSERT INTO Tags (nom_tag) VALUES (:nom)");
-        return $stmt->execute([':nom' => $tagName]);
+        // Génération du slug (minuscules, tirets)
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $tagName)));
+
+        $stmt = $this->db->prepare("INSERT INTO Tags (nom_tag, slug) VALUES (:nom, :slug)");
+        return $stmt->execute([
+            ':nom' => $tagName,
+            ':slug' => $slug
+        ]);
     }
 
     /* --- Gestion des Commentaires --- */

@@ -1,0 +1,8 @@
+[2025-12-25 23:05:42] [ERROR] Erreur création tag : SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'feur' for key 'nom_tag' {"tag":"feur"}
+[2025-12-25 23:05:50] [ERROR] Erreur création tag : SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'feur' for key 'nom_tag' {"tag":"feur"}
+[2025-12-25 23:05:56] [ERROR] Erreur création tag : SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '' for key 'slug' {"tag":"okay"}
+[2025-12-25 23:06:01] [ERROR] Erreur création tag : SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '' for key 'slug' {"tag":"okay"}
+[2025-12-25 23:06:11] [ERROR] Erreur création tag : SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '' for key 'slug' {"tag":"okay"}
+[2025-12-25 23:06:45] [ERROR] Erreur création tag : SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '' for key 'slug' {"tag":"chut"}
+[2025-12-25 23:07:14] [ERROR] Erreur création tag : SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '' for key 'slug' {"tag":"pourquopi"}
+[2025-12-25 23:14:49] [ERROR] Erreur création tag : SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '' for key 'slug' {"tag":"pourquopi"}
