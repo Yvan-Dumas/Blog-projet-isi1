@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . '/../models/Blog.php';
+use League\CommonMark\CommonMarkConverter;
+
 
 class BlogController
 {
@@ -35,15 +37,19 @@ class BlogController
 
         $article = $this->BlogModel->getArticleBySlug($slug);
 
+        $converter = new CommonMarkConverter([
+        'html_input' => 'strip',   // sécurité
+        'allow_unsafe_links' => false,
+        ]);
 
+        $article['contenu_html'] = $converter->convert($article['contenu'])->getContent();
 
         $comments = $this->BlogModel->getCommentsByArticleId($article['id']);
 
         echo $this->twig->render('article.twig', [
             'article' => $article,
             'comments' => $comments,
-            'titre_doc' => 'Article',
-            'titre_page' => 'Détail de l\'article',
+            'titre_doc' => 'Blog - Article'
         ]);
     }
 

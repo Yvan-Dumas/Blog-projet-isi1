@@ -1,5 +1,6 @@
 {
     "require": {
-        "twig/twig": "v3.22.0"
+        "twig/twig": "v3.22.0",
+        "league/commonmark": "^2.5"
     }
 }

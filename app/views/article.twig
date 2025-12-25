@@ -10,8 +10,9 @@
 	<div class="mx-4">
 		<p class="mb-3">Date de mise à jour :
 			{{ article["date_mise_a_jour"] }}</p>
-		<img class="mb-3" src="image/{{ article[0].image|default('default.png') }}" alt="pas d'image disponible">
-		<p>{{ article['contenu'] | raw }}</p>
+		<img class="mb-3" src="image/{{ article.image_une}}" alt="pas d'image disponible">
+
+		{{ article['contenu_html'] | raw}}
 
 		<h3 class="mt-5 mb-4 border-bottom pb-2">Commentaires</h3>
 

@@ -23,7 +23,14 @@
 		<!-- Contenu de l'article -->
 		<div class="mb-3">
 			<label for="contenu" class="form-label">Contenu</label>
-			<textarea id="contenu" name="contenu" class="form-control" rows="10"></textarea>
+			<textarea id="contenu" name="contenu" class="form-control" rows="10" 
+			placeholder="# Titre
+			## Sous-titre 
+			**gras**, *italique*, - liste" required></textarea>
+
+			<small class="text-muted">
+				Markdown supporté : # ## **gras** *italique* listes liens
+			</small>
 		</div>
 
 		<!-- Tags -->
@@ -40,17 +47,4 @@
 		<!-- Bouton de soumission -->
 		<button type="submit" class="btn btn-success">Créer l'article</button>
 	</form>
-</div>{% endblock %}{% block scripts %}
-{{ parent() }}
-<!-- TinyMCE WYSIWYG -->
-<script src="https://cdn.tiny.cloud/1/bgt090zplr2r9etraoq7cn8dfectzhgvnegr4wm9qnqkxqjz/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-<script>
-tinymce.init({
-    selector: '#contenu',
-    height: 400,
-    menubar: true,
-    plugins: 'advlist autolink lists link image charmap preview anchor searchreplace code fullscreen insertdatetime media table help wordcount',
-    toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | removeformat | code | help',
-    content_style: "body { font-family:Arial,sans-serif; font-size:14px }"
-});
-</script>{% endblock %}
+</div>{% endblock %}
