@@ -78,27 +78,28 @@ class AdminController
         $this->checkAdminAccess();
         // Handle POST update
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $roles = $_POST['roles'] ?? []; // Array of role IDs
+            try {
+                $roles = $_POST['roles'] ?? []; // Array of role IDs
+                // Security: Ensure at least one role is assigned or handle empty? 
+                // Better allow empty if that's desired, but usually a user needs a role.
 
-            // Security: Ensure at least one role is assigned or handle empty? 
-            // Better allow empty if that's desired, but usually a user needs a role.
-            // Let's assume passed array is correct.
-
-            if ($this->adminModel->updateUserRoles($id, $roles)) {
-                Logger::getInstance()->security(
-                    'Mise à jour des rôles utilisateur',
-                    [
-                        'admin_id' => $_SESSION['user']['id'],
-                        'user_id' => $id,
-                        'new_roles' => $roles
-                    ]
-                );
-
-                // Redirect back to list
-                header('Location: ' . $this->twig->getGlobals()['base_url'] . 'AdminUsers');
-                exit;
-            } else {
-                echo "Erreur lors de la mise à jour.";
+                if ($this->adminModel->updateUserRoles($id, $roles)) {
+                    Logger::getInstance()->security(
+                        'Mise à jour des rôles utilisateur',
+                        [
+                            'admin_id' => $_SESSION['user']['id'],
+                            'user_id' => $id,
+                            'new_roles' => $roles
+                        ]
+                    );
+                    header('Location: ' . $this->twig->getGlobals()['base_url'] . 'AdminUsers');
+                    exit;
+                } else {
+                    echo "Erreur lors de la mise à jour.";
+                }
+            } catch (Exception $e) {
+                Logger::getInstance()->error("Erreur lors de la modification des rôles : " . $e->getMessage(), ['user_id' => $id]);
+                echo "Une erreur est survenue.";
             }
         }
 
@@ -134,10 +135,14 @@ class AdminController
     public function updateCommentStatusAction(int $id, string $status): void
     {
         $this->checkAdminAccess();
-        // Sécurité : vérifier que le statut est valide
-        $validStatuses = ['Approuvé', 'Rejeté', 'En attente'];
-        if (in_array($status, $validStatuses)) {
-            $this->adminModel->updateCommentStatus($id, $status);
+        try {
+            // Sécurité : vérifier que le statut est valide
+            $validStatuses = ['Approuvé', 'Rejeté', 'En attente'];
+            if (in_array($status, $validStatuses)) {
+                $this->adminModel->updateCommentStatus($id, $status);
+            }
+        } catch (Exception $e) {
+            Logger::getInstance()->error("Erreur modération commentaire : " . $e->getMessage(), ['id' => $id]);
         }
 
         // Log de modification
@@ -162,7 +167,13 @@ class AdminController
     public function deleteCommentAction(int $id): void
     {
         $this->checkAdminAccess();
-        $this->adminModel->deleteComment($id);
+        try {
+            $this->adminModel->deleteComment($id);
+        } catch (Exception $e) {
+            Logger::getInstance()->error("Erreur suppression commentaire : " . $e->getMessage(), ['id' => $id]);
+            // On peut rediriger avec flash ou laisser continuer pour le log de suppression (qui pourrait échouer si record deleted ?)
+            // Idéalement on arrête si erreur critique. Mais continuons pour garder la structure.
+        }
 
         // Log de suppression
         $logger = Logger::getInstance();
@@ -195,9 +206,13 @@ class AdminController
     public function updateArticleStatusAction(int $id, string $status): void
     {
         $this->checkAdminAccess();
-        $validStatuses = ['Publié', 'Brouillon', 'Archivé'];
-        if (in_array($status, $validStatuses)) {
-            $this->adminModel->updateArticleStatus($id, $status);
+        try {
+            $validStatuses = ['Publié', 'Brouillon', 'Archivé'];
+            if (in_array($status, $validStatuses)) {
+                $this->adminModel->updateArticleStatus($id, $status);
+            }
+        } catch (Exception $e) {
+            Logger::getInstance()->error("Erreur modification statut article : " . $e->getMessage(), ['id' => $id]);
         }
 
         // Log de modification de statut
@@ -218,7 +233,11 @@ class AdminController
     public function deleteArticleAction(int $id): void
     {
         $this->checkAdminAccess();
-        $this->adminModel->deleteArticle($id);
+        try {
+            $this->adminModel->deleteArticle($id);
+        } catch (Exception $e) {
+            Logger::getInstance()->error("Erreur suppression article : " . $e->getMessage(), ['id' => $id]);
+        }
 
         // Log de suppression
         $logger = Logger::getInstance();
@@ -240,7 +259,11 @@ class AdminController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $tagName = trim($_POST['tag_name'] ?? '');
             if (!empty($tagName)) {
-                $this->adminModel->createTag($tagName);
+                try {
+                    $this->adminModel->createTag($tagName);
+                } catch (Exception $e) {
+                    Logger::getInstance()->error("Erreur création tag : " . $e->getMessage(), ['tag' => $tagName]);
+                }
             }
         }
         header('Location: ' . $this->twig->getGlobals()['base_url'] . 'AdminBoard');

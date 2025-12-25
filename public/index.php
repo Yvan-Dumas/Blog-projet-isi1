@@ -4,6 +4,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../app/controller/BlogController.php';
 require_once __DIR__ . '/../app/controller/AuthController.php';
 require_once __DIR__ . '/../app/controller/AdminController.php';
+require_once __DIR__ . '/../app/Logger.php';
 
 // Twig
 $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/../app/views');
@@ -129,7 +130,7 @@ switch ($requestUri) {
     case '/AdminUsers':
         $AdminController->usersList();
         break;
-    case '/AdminComments':
+    case '/AdminCommentSs':
         $AdminController->commentsList();
         break;
     case '/AdminArticles':
@@ -149,6 +150,7 @@ switch ($requestUri) {
         break;
     default:
         http_response_code(404);
+        Logger::getInstance()->error("404 Page Not Found", ['uri' => $requestUri, 'ip' => $_SERVER['REMOTE_ADDR']]);
         echo "Page non trouvée - URI : $requestUri";
         break;
 }

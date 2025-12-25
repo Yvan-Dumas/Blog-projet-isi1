@@ -4,7 +4,8 @@
  * Class Logger pour l'écriture de logs pour l'application.
  * Implémenté selon le Singleton pour garantir l'instance unique.
  */
-class Logger {
+class Logger
+{
     // Instance unique du logger
     private static ?Logger $instance = null;
 
@@ -15,14 +16,16 @@ class Logger {
     {
         $basePath = __DIR__ . '/../logs/'; // Chemin vers le dossier logs
         $this->paths = [
-            'app'      => $basePath . 'app/',
-            'error'    => $basePath . 'error/',
+            'app' => $basePath . 'app/',
+            'error' => $basePath . 'error/',
             'security' => $basePath . 'security/',
         ];
     }
 
     // Pour empêcher le clonage
-    private function __clone() {}
+    private function __clone()
+    {
+    }
 
     // Pour obtenir l'instance unique
     public static function getInstance(): Logger
@@ -68,9 +71,15 @@ class Logger {
         // Construction de la ligne de log finale
         $logLine = "[$dateTime] [$level] $message $contextString" . PHP_EOL;
 
+        // Vérification et création du dossier si inexistant
+        $logDir = $this->paths[$type];
+        if (!is_dir($logDir)) {
+            mkdir($logDir, 0777, true);
+        }
+
         // Ecriture dans le fichier
         file_put_contents(
-            $this->paths[$type] . "$type-$fileDate.log",
+            $logDir . "$type-$fileDate.log",
             $logLine,
             FILE_APPEND
         );

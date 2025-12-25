@@ -131,47 +131,57 @@ class BlogController
 
         $tags = $_POST['tags'] ?? [];
 
-        // gestion de l'image
-        $imagePath = null;
-        if (!empty($_FILES['image']['name'])) {
-            $uploadDir = __DIR__ . '/../../public/image/articles/';
-            $extension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-            $fileName = uniqid('article_') . '.' . $extension;
-            move_uploaded_file($_FILES['image']['tmp_name'], $uploadDir . $fileName);
-            $imagePath = 'image/articles/' . $fileName; // chemin stocké en base
+        try {
+            // gestion de l'image
+            $imagePath = null;
+            if (!empty($_FILES['image']['name'])) {
+                $uploadDir = __DIR__ . '/../../public/image/articles/';
+                $extension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
+                $fileName = uniqid('article_') . '.' . $extension;
+                if (!move_uploaded_file($_FILES['image']['tmp_name'], $uploadDir . $fileName)) {
+                    throw new Exception("Echec de l'upload de l'image.");
+                }
+                $imagePath = 'image/articles/' . $fileName; // chemin stocké en base
+            }
+
+            // Crée l'article
+            $articleId = $this->BlogModel->createArticle([
+                'titre' => $titre,
+                'slug' => $slug,
+                'contenu' => $contenu,
+                'id_utilisateur' => $userId,
+                'image_une' => $imagePath,
+                'statut' => $statut
+            ]);
+
+            // Ajoute les tags
+            foreach ($tags as $tagId) {
+                $this->BlogModel->addTagToArticle($articleId, (int) $tagId);
+            }
+
+            $logger = Logger::getInstance();
+            $logger->info("Nouvel article créé", [
+                'article_id' => $articleId,
+                'titre' => $titre,
+                'slug' => $slug,
+                'utilisateur' => [
+                    'id' => $userId,
+                    'nom' => $_SESSION['user']['nom_utilisateur'] ?? 'inconnu'
+                ],
+                'tags' => $tags,
+                'image' => $imagePath,
+                'statut' => $statut
+            ]);
+
+            header('Location: ' . $this->twig->getGlobals()['base_url']); //redirection vers l'accueil
+            exit;
+
+        } catch (Exception $e) {
+            Logger::getInstance()->error("Erreur création article : " . $e->getMessage(), ['user_id' => $userId, 'data' => $_POST]);
+            // Idéalement, rediriger vers create avec les erreurs, mais simple redirect pour l'instant
+            header('Location: ' . $this->twig->getGlobals()['base_url'] . 'myArticles/create');
+            exit;
         }
-
-        // Crée l'article
-        $articleId = $this->BlogModel->createArticle([
-            'titre' => $titre,
-            'slug' => $slug,
-            'contenu' => $contenu,
-            'id_utilisateur' => $userId,
-            'image_une' => $imagePath,
-            'statut' => $statut
-        ]);
-
-        // Ajoute les tags
-        foreach ($tags as $tagId) {
-            $this->BlogModel->addTagToArticle($articleId, (int) $tagId);
-        }
-
-        $logger = Logger::getInstance();
-        $logger->info("Nouvel article créé", [
-            'article_id'   => $articleId,
-            'titre'        => $titre,
-            'slug'         => $slug,
-            'utilisateur'  => [
-                'id' => $userId,
-                'nom' => $_SESSION['user']['nom_utilisateur'] ?? 'inconnu'
-            ],
-            'tags' => $tags,
-            'image' => $imagePath,
-            'statut' => $statut
-        ]);
-
-        header('Location: ' . $this->twig->getGlobals()['base_url']); //redirection vers l'accueil
-        exit;
     }
 
     // Fonction pour la page de modification d'article
@@ -289,15 +299,15 @@ class BlogController
         // Log de modification
         $logger = Logger::getInstance();
         $logger->info("Article modifié", [
-            'article_id'  => $article['id'],
-            'titre'       => $titre,
-            'slug'        => $newSlug,
+            'article_id' => $article['id'],
+            'titre' => $titre,
+            'slug' => $newSlug,
             'utilisateur' => [
                 'id' => $userId,
                 'nom' => $_SESSION['user']['nom_utilisateur'] ?? 'inconnu'
             ],
-            'tags'        => $tags,
-            'image'       => $imagePath,
+            'tags' => $tags,
+            'image' => $imagePath,
             'statut' => $statut
         ]);
 
@@ -378,23 +388,29 @@ class BlogController
                     exit;
                 }
             }
-            // Enregistrement
-            $this->BlogModel->createComment($articleId, $authorName, $authorEmail, $content);
+            try {
+                // Enregistrement
+                $this->BlogModel->createComment($articleId, $authorName, $authorEmail, $content);
 
-            // Log du commentaire
-            $logger = Logger::getInstance();
-            $logger->info("Nouveau commentaire ajouté", [
-                'article_id'   => $articleId,
-                'article_slug' => $slug,
-                'auteur'       => [
-                    'nom'   => $authorName,
-                    'email' => $authorEmail
-                ],
-                'contenu'      => $content
-            ]);
-            // Redirection
-            header('Location: ' . $this->twig->getGlobals()['base_url'] . 'article/' . $slug);
-            exit;
+                // Log du commentaire
+                $logger = Logger::getInstance();
+                $logger->info("Nouveau commentaire ajouté", [
+                    'article_id' => $articleId,
+                    'article_slug' => $slug,
+                    'auteur' => [
+                        'nom' => $authorName,
+                        'email' => $authorEmail
+                    ],
+                    'contenu' => $content
+                ]);
+                // Redirection
+                header('Location: ' . $this->twig->getGlobals()['base_url'] . 'article/' . $slug);
+                exit;
+            } catch (Exception $e) {
+                Logger::getInstance()->error("Erreur ajout commentaire : " . $e->getMessage(), ['article_id' => $articleId]);
+                header('Location: ' . $this->twig->getGlobals()['base_url'] . 'article/' . $slug);
+                exit;
+            }
         }
     }
 }
