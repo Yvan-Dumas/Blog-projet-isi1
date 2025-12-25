@@ -73,7 +73,6 @@ class BlogController
         return false;
     }
 
-
     // Fonction pour la page mes articles
     public function renderMyArticles(): void
     {
@@ -175,6 +174,50 @@ class BlogController
         header('Location: ' . $this->twig->getGlobals()['base_url']); //redirection vers l'accueil
         exit;
     }
+
+    // Fonction pour supprimer un article
+    public function deleteArticleBySlug(string $slug)
+    {
+        // Vérifie que l'utilisateur est connecté et peut accéder à la page
+        if (!$this->userCanCreateArticle()) {
+            header('Location: ' . $this->twig->getGlobals()['base_url']); //redirection vers l'accueil
+            exit;
+        }
+
+        $userId = $_SESSION['user']['id'];
+        $userRoles = $_SESSION['user']['roles'];
+
+        $article = $this->BlogModel->getArticleBySlug($slug);
+        if (!$article) {
+            header('Location: ' . $this->twig->getGlobals()['base_url']); //redirection vers l'accueil
+            exit;
+        }
+
+        if ($article['utilisateur_id'] != $userId && !in_array(1, $userRoles)) {
+            header('HTTP/1.1 403 Forbidden');
+            echo "Vous n'avez pas le droit de supprimer cet article.";
+            exit;
+        }
+
+        $this->BlogModel->deleteArticle($article['id']);
+
+        $logger = Logger::getInstance();
+        $logger->info("Article supprimé", [
+            'article_id' => $article['id'],
+            'slug' => $slug,
+            'titre' => $article['titre'],
+            'utilisateur' => [
+                'id' => $userId,
+                'nom' => $_SESSION['user']['nom_utilisateur']
+            ]
+        ]);
+
+        header('Location: ' . $this->twig->getGlobals()['base_url']); //redirection vers l'accueil
+        exit;
+    }
+
+
+
     /* =============================================================== */
 
 
@@ -205,7 +248,6 @@ class BlogController
                     exit;
                 }
             }
-
             // Enregistrement
             $this->BlogModel->createComment($articleId, $authorName, $authorEmail, $content);
 

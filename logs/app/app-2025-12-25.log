@@ -1,1 +1,4 @@
 [2025-12-25 18:31:37] [INFO] Nouvel article créé {"article_id":8,"titre":"a^\"uioprd)à_az","slug":"a-uioprd-az","utilisateur":{"id":1,"nom":"AdminVTT"},"tags":["7"],"image":null,"statut":"Brouillon"}
+[2025-12-25 19:16:25] [INFO] Article supprimé {"article_id":4,"slug":"test","titre":"test","utilisateur":{"id":1,"nom":"AdminVTT"}}
+[2025-12-25 19:16:29] [INFO] Article supprimé {"article_id":8,"slug":"a-uioprd-az","titre":"a^\"uioprd)à_az","utilisateur":{"id":1,"nom":"AdminVTT"}}
+[2025-12-25 19:16:33] [INFO] Article supprimé {"article_id":7,"slug":"test-2","titre":"test","utilisateur":{"id":1,"nom":"AdminVTT"}}

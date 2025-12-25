@@ -62,6 +62,17 @@ if (preg_match('#^/AdminComment/Delete/([0-9]+)$#', $requestUri, $matches)) {
     exit;
 }
 
+
+
+// Route pour supprimer un article par slug
+if (preg_match('#^/myArticles/delete/(.+)$#', $requestUri, $matches)) {
+    $slug = $matches[1];
+    $controller->deleteArticleBySlug($slug);
+    exit;
+}
+
+
+
 // Sinon
 switch ($requestUri) {
     case '/':

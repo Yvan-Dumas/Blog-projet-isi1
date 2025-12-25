@@ -24,7 +24,9 @@ class Blog
         $query = $this->db->prepare("SELECT * FROM articles WHERE slug = :slug");
         $query->bindParam(':slug', $Slug);
         $query->execute();
-        return $query->fetch(PDO::FETCH_ASSOC);
+        $result = $query->fetch(PDO::FETCH_ASSOC);
+
+        return $result ?: [];
     }
 
     public function getUserByEmail($email): ?array
@@ -126,6 +128,23 @@ class Blog
             ':tagId' => $tagId
         ]);
     }
+
+    public function deleteArticle(int $articleId): bool
+    {
+        // Supprime d'abord les associations tags
+        $queryTags = $this->db->prepare("DELETE FROM article_tag WHERE article_id = :id");
+        $queryTags->execute([':id' => $articleId]);
+
+        // Supprime ensuite les commentaires associés
+        $queryComments = $this->db->prepare("DELETE FROM commentaires WHERE article_id = :id");
+        $queryComments->execute([':id' => $articleId]);
+
+        // Supprime l'article
+        $queryArticle = $this->db->prepare("DELETE FROM articles WHERE id = :id");
+        return $queryArticle->execute([':id' => $articleId]);
+    }
+
+
     public function getCommentsByArticleId(int $articleId): array
     {
         $query = $this->db->prepare("
