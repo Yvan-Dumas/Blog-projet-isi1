@@ -59,6 +59,14 @@
 						<p class="text-muted mb-0">Aucun tag trouvé.</p>
 					{% endfor %}
 				</div>
+				<hr class="my-3">
+				<form action="{{ base_url }}AdminTag/Add" method="POST" class="d-flex justify-content-end align-items-center gap-2">
+					<input type="text" name="tag_name" class="form-control form-control-sm dark-white-input" style="width: 200px;" placeholder="Nouveau tag..." required>
+					<button type="submit" class="btn btn-sm btn-success">
+						<i class="bi bi-plus-lg"></i>
+						Ajouter
+					</button>
+				</form>
 			</div>
 		</div>
 	</div>

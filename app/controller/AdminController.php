@@ -206,4 +206,16 @@ class AdminController
         header('Location: ' . $this->twig->getGlobals()['base_url'] . 'AdminArticles');
         exit;
     }
+
+    public function addTagAction(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $tagName = trim($_POST['tag_name'] ?? '');
+            if (!empty($tagName)) {
+                $this->adminModel->createTag($tagName);
+            }
+        }
+        header('Location: ' . $this->twig->getGlobals()['base_url'] . 'AdminBoard');
+        exit;
+    }
 }

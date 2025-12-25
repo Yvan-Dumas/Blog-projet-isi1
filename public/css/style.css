@@ -193,6 +193,15 @@ footer {
   color: var(--text);
 }
 
-.text-muted{
+.text-muted {
   color: var(--muted-text) !important;
+}
+
+/* Custom Input visibility for Dark Mode */
+.dark .dark-white-input {
+  border-color: #ffffff !important;
+}
+
+.dark .dark-white-input::placeholder {
+  color: rgba(163, 141, 141, 0.8) !important;
 }

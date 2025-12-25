@@ -126,6 +126,12 @@ class Admin
         return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function createTag(string $tagName): bool
+    {
+        $stmt = $this->db->prepare("INSERT INTO Tags (nom_tag) VALUES (:nom)");
+        return $stmt->execute([':nom' => $tagName]);
+    }
+
     /* --- Gestion des Commentaires --- */
 
     public function getAllComments(): array
