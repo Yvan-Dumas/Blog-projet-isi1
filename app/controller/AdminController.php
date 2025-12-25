@@ -13,8 +13,26 @@ class AdminController
         $this->adminModel = new Admin();
     }
 
+    private function checkAdminAccess(): void
+    {
+        // 1. L'utilisateur doit être connecté
+        if (!isset($_SESSION['user'])) {
+            header('Location: ' . $this->twig->getGlobals()['base_url'] . 'auth');
+            exit;
+        }
+
+        // 2. L'utilisateur doit avoir le rôle Admin (ID = 1)
+        // On suppose que $_SESSION['user']['roles'] est un tableau d'IDs
+        if (!in_array(1, $_SESSION['user']['roles'])) {
+            header('HTTP/1.1 403 Forbidden');
+            echo "Accès refusé. Vous n'êtes pas administrateur.";
+            exit;
+        }
+    }
+
     public function AdminBoard(): void
     {
+        $this->checkAdminAccess();
         $stats = [
             'nbArticles' => $this->adminModel->getArticleCount(),
             'nbCommentaires' => $this->adminModel->getPendingCommentCount(),
@@ -31,6 +49,7 @@ class AdminController
 
     public function activity(): void
     {
+        $this->checkAdminAccess();
         $data = [
             'articles' => $this->adminModel->getLastArticles(),
             'comments' => $this->adminModel->getLastComments(),
@@ -45,6 +64,7 @@ class AdminController
     }
     public function usersList(): void
     {
+        $this->checkAdminAccess();
         $users = $this->adminModel->getAllUsersWithRoles();
         echo $this->twig->render('adminUsers.twig', [
             'titre_doc' => "Blog - Gestion Utilisateurs",
@@ -55,6 +75,7 @@ class AdminController
 
     public function editUserRoles(int $id): void
     {
+        $this->checkAdminAccess();
         // Handle POST update
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $roles = $_POST['roles'] ?? []; // Array of role IDs
@@ -101,6 +122,7 @@ class AdminController
     }
     public function commentsList(): void
     {
+        $this->checkAdminAccess();
         $comments = $this->adminModel->getAllComments();
         echo $this->twig->render('adminComments.twig', [
             'titre_doc' => "Blog - Modération Commentaires",
@@ -111,6 +133,7 @@ class AdminController
 
     public function updateCommentStatusAction(int $id, string $status): void
     {
+        $this->checkAdminAccess();
         // Sécurité : vérifier que le statut est valide
         $validStatuses = ['Approuvé', 'Rejeté', 'En attente'];
         if (in_array($status, $validStatuses)) {
@@ -120,12 +143,12 @@ class AdminController
         // Log de modification
         $logger = Logger::getInstance();
         $logger->info("Statut de commentaire modifié", [
-            'comment_id'    => $id,
-            'article_id'    => $comment['article_id'] ?? null,
-            'auteur'        => $comment['nom_auteur'] ?? 'inconnu',
+            'comment_id' => $id,
+            'article_id' => $comment['article_id'] ?? null,
+            'auteur' => $comment['nom_auteur'] ?? 'inconnu',
             'ancien_statut' => $comment['statut'] ?? 'inconnu',
             'nouveau_statut' => $status,
-            'admin'         => [
+            'admin' => [
                 'id' => $_SESSION['user']['id'] ?? null,
                 'nom' => $_SESSION['user']['nom_utilisateur'] ?? 'inconnu'
             ]
@@ -138,6 +161,7 @@ class AdminController
 
     public function deleteCommentAction(int $id): void
     {
+        $this->checkAdminAccess();
         $this->adminModel->deleteComment($id);
 
         // Log de suppression
@@ -145,9 +169,9 @@ class AdminController
         $logger->info("Commentaire supprimé", [
             'comment_id' => $id,
             'article_id' => $comment['article_id'] ?? null,
-            'auteur'     => $comment['nom_auteur'] ?? 'inconnu',
-            'contenu'    => $comment['contenu'] ?? '',
-            'admin'      => [
+            'auteur' => $comment['nom_auteur'] ?? 'inconnu',
+            'contenu' => $comment['contenu'] ?? '',
+            'admin' => [
                 'id' => $_SESSION['user']['id'] ?? null,
                 'nom' => $_SESSION['user']['nom_utilisateur'] ?? 'inconnu'
             ]
@@ -159,6 +183,7 @@ class AdminController
 
     public function articlesList(): void
     {
+        $this->checkAdminAccess();
         $articles = $this->adminModel->getAllArticlesWithAuthors();
         echo $this->twig->render('adminArticles.twig', [
             'titre_doc' => "Blog - Gestion Articles",
@@ -169,6 +194,7 @@ class AdminController
 
     public function updateArticleStatusAction(int $id, string $status): void
     {
+        $this->checkAdminAccess();
         $validStatuses = ['Publié', 'Brouillon', 'Archivé'];
         if (in_array($status, $validStatuses)) {
             $this->adminModel->updateArticleStatus($id, $status);
@@ -177,10 +203,10 @@ class AdminController
         // Log de modification de statut
         $logger = Logger::getInstance();
         $logger->info("Statut d'article modifié", [
-            'article_id'    => $id,
+            'article_id' => $id,
             'nouveau_statut' => $status,
-            'admin'         => [
-                'id'  => $_SESSION['user']['id'] ?? null,
+            'admin' => [
+                'id' => $_SESSION['user']['id'] ?? null,
                 'nom' => $_SESSION['user']['nom_utilisateur'] ?? 'inconnu'
             ]
         ]);
@@ -191,14 +217,15 @@ class AdminController
 
     public function deleteArticleAction(int $id): void
     {
+        $this->checkAdminAccess();
         $this->adminModel->deleteArticle($id);
 
         // Log de suppression
         $logger = Logger::getInstance();
         $logger->info("Article supprimé", [
             'article_id' => $id,
-            'admin'      => [
-                'id'  => $_SESSION['user']['id'] ?? null,
+            'admin' => [
+                'id' => $_SESSION['user']['id'] ?? null,
                 'nom' => $_SESSION['user']['nom_utilisateur'] ?? 'inconnu'
             ]
         ]);
@@ -209,6 +236,7 @@ class AdminController
 
     public function addTagAction(): void
     {
+        $this->checkAdminAccess();
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $tagName = trim($_POST['tag_name'] ?? '');
             if (!empty($tagName)) {
