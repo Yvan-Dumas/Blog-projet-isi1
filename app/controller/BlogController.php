@@ -175,6 +175,24 @@ class BlogController
         exit;
     }
 
+    // Fonction pour la page de modification d'article
+    public function editArticleBySlug(): void
+    {
+        // Vérifie que l'utilisateur est connecté et peut accéder à la page
+        if (!$this->userCanCreateArticle()) {
+            header('Location: ' . $this->twig->getGlobals()['base_url']); //redirection vers l'accueil
+            exit;
+        }
+
+        $tags = $this->BlogModel->getAllTags();
+        echo $this->twig->render('myArticles/create.twig', [
+            'titre_doc' => "Blog - Nouvel article",
+            'titre_page' => 'Nouvel article',
+            'tags' => $tags
+        ]);
+    }
+
+
     // Fonction pour supprimer un article
     public function deleteArticleBySlug(string $slug)
     {
