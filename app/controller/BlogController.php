@@ -16,7 +16,7 @@ class BlogController
         $this->BlogModel = new Blog();
     }
 
-    // Fonction pour la page d'accueil
+    // Fonction pour la page d'accueil avec la liste des articles
     public function index(): void
     {
         $articles = $this->BlogModel->getAllArticles();
@@ -129,11 +129,9 @@ class BlogController
             // Contributeur
             $validStatuses = ['Brouillon', 'Archivé'];
         }
-
         // Statut demandé
         $statut = $_POST['statut'] ?? 'Brouillon';
-
-        // Sécurisation finale
+        // Vérification finale du statut
         if (!in_array($statut, $validStatuses)) {
             $statut = 'Brouillon';
         }
@@ -191,6 +189,7 @@ class BlogController
             header('Location: ' . $this->twig->getGlobals()['base_url'] . 'myArticles/create');
             exit;
         }
+
     }
 
     // Fonction pour la page de modification d'article
@@ -335,7 +334,6 @@ class BlogController
     }
 
 
-
     // Fonction pour supprimer un article
     public function deleteArticleBySlug(string $slug)
     {
@@ -379,6 +377,7 @@ class BlogController
     /* =============================================================== */
 
 
+    // Fonction qui traite le formulaire pour poster un commentaire
     public function postComment()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -386,14 +385,13 @@ class BlogController
             $slug = $_POST['article_slug'] ?? '';
             $content = trim($_POST['content'] ?? '');
 
-            // Validation simple
+            // Vérification
             if (!$articleId || empty($content)) {
-                // Pour simplifier, on redirige juste (idéalement : message d'erreur en session)
                 header('Location: ' . $this->twig->getGlobals()['base_url'] . 'article/' . $slug);
                 exit;
             }
 
-            // Gestion Utilisateur Connecté vs Invité
+            // Gestion utilisateur connecté ou invité
             if (isset($_SESSION['user'])) {
                 $authorName = $_SESSION['user']['nom_utilisateur'];
                 $authorEmail = $_SESSION['user']['email'];
