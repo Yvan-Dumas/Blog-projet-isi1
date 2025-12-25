@@ -357,9 +357,6 @@ class BlogController
         header('Location: ' . $this->twig->getGlobals()['base_url']); //redirection vers l'accueil
         exit;
     }
-
-
-
     /* =============================================================== */
 
 
@@ -393,6 +390,17 @@ class BlogController
             // Enregistrement
             $this->BlogModel->createComment($articleId, $authorName, $authorEmail, $content);
 
+            // Log du commentaire
+            $logger = Logger::getInstance();
+            $logger->info("Nouveau commentaire ajouté", [
+                'article_id'   => $articleId,
+                'article_slug' => $slug,
+                'auteur'       => [
+                    'nom'   => $authorName,
+                    'email' => $authorEmail
+                ],
+                'contenu'      => $content
+            ]);
             // Redirection
             header('Location: ' . $this->twig->getGlobals()['base_url'] . 'article/' . $slug);
             exit;
