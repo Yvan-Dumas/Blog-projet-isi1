@@ -23,8 +23,7 @@
 		<!-- Contenu de l'article -->
 		<div class="mb-3">
 			<label for="contenu" class="form-label">Contenu</label>
-			<textarea id="contenu" name="contenu" class="form-control" rows="10" 
-			placeholder="# Titre, ## Sous-titre, **gras**, *italique*, - liste" required></textarea>
+			<textarea id="contenu" name="contenu" class="form-control" rows="10" placeholder="# Titre, ## Sous-titre, **gras**, *italique*, - liste" required></textarea>
 
 			<small class="text-muted">
 				Markdown supporté : # ## **gras** *italique* listes liens
@@ -41,6 +40,19 @@
 			</select>
 			<small class="text-muted">Maintenez Ctrl (Windows) ou Cmd (Mac) pour sélectionner plusieurs tags.</small>
 		</div>
+
+		<!-- Statut (visible seulement pour les éditeurs) -->
+		{% if 2 in session.user.roles %}
+			<div class="mb-3">
+				<label for="statut" class="form-label">Statut de l'article</label>
+				<select id="statut" name="statut" class="form-select">
+					<option value="Brouillon">Brouillon</option>
+					<option value="Publié">Publié</option>
+					<option value="Archivé">Archivé</option>
+				</select>
+			</div>
+		{% endif %}
+
 
 		<!-- Bouton de soumission -->
 		<button type="submit" class="btn btn-success">Créer l'article</button>

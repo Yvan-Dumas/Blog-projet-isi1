@@ -1,53 +1,64 @@
 {% extends "base.html.twig" %}
 
 {% block title %}
-    {{ titre_doc }}
+	{{ titre_doc }}
 {% endblock %}
 
 {% block content %}
-<h1 class="text-center my-4">{{ titre_page }}</h1>
+	<h1 class="text-center my-4">{{ titre_page }}</h1>
 
-<form action="{{ base_url }}myArticles/updateArticle/{{ article.slug }}" method="post" class="mx-auto w-75 mb-5" enctype="multipart/form-data">
-    <!-- Titre -->
-    <div class="mb-3">
-        <label for="titre" class="form-label">Titre</label>
-        <input type="text" class="form-control" id="titre" name="titre" value="{{ article.titre }}" required>
-    </div>
+	<form
+		action="{{ base_url }}myArticles/updateArticle/{{ article.slug }}" method="post" class="mx-auto w-75 mb-5" enctype="multipart/form-data">
+		<!-- Titre -->
+		<div class="mb-3">
+			<label for="titre" class="form-label">Titre</label>
+			<input type="text" class="form-control" id="titre" name="titre" value="{{ article.titre }}" required>
+		</div>
 
-    <!-- Image -->
-    {% if article.image_une %}
-        <div class="mb-3">
-            <label class="form-label">Image actuelle</label><br>
-            <img src="{{ base_url }}{{ article.image_une }}" alt="Image à la une" class="img-fluid mb-2" style="max-width:200px;">
-        </div>
-    {% endif %}
-    <div class="mb-3">
-        <label for="image" class="form-label">Changer l'image (facultatif)</label>
-        <input type="file" id="image" name="image" class="form-control" accept="image/*">
-    </div>
+		<!-- Image -->
+		{% if article.image_une %}
+			<div class="mb-3">
+				<label class="form-label">Image actuelle</label><br>
+				<img src="{{ base_url }}{{ article.image_une }}" alt="Image à la une" class="img-fluid mb-2" style="max-width:200px;">
+			</div>
+		{% endif %}
+		<div class="mb-3">
+			<label for="image" class="form-label">Changer l'image (facultatif)</label>
+			<input type="file" id="image" name="image" class="form-control" accept="image/*">
+		</div>
 
-    <!-- Contenu Markdown -->
-    <div class="mb-3">
-        <label for="contenu" class="form-label">Contenu</label>
-        <textarea id="contenu" name="contenu" class="form-control" rows="10"
-            placeholder="# Titre, ## Sous-titre, **gras**, *italique*, - liste"
-            required>{{ article.contenu }}</textarea>
-        <small class="text-muted">
-            Markdown supporté : # ## **gras** *italique* listes liens
-        </small>
-    </div>
+		<!-- Contenu Markdown -->
+		<div class="mb-3">
+			<label for="contenu" class="form-label">Contenu</label>
+			<textarea id="contenu" name="contenu" class="form-control" rows="10" placeholder="# Titre, ## Sous-titre, **gras**, *italique*, - liste" required>{{ article.contenu }}</textarea>
+			<small class="text-muted">
+				Markdown supporté : # ## **gras** *italique* listes liens
+			</small>
+		</div>
 
-    <!-- Tags -->
-    <div class="mb-3">
-        <label for="tags" class="form-label">Tags (facultatif)</label>
-        <select id="tags" name="tags[]" class="form-select" multiple>
-            {% for tag in tags %}
-                <option value="{{ tag.id }}" {% if tag.id in article.tags %}selected{% endif %}>{{ tag.nom_tag }}</option>
-            {% endfor %}
-        </select>
-        <small class="text-muted">Maintenez Ctrl (Windows) ou Cmd (Mac) pour sélectionner plusieurs tags.</small>
-    </div>
+		<!-- Tags -->
+		<div class="mb-3">
+			<label for="tags" class="form-label">Tags (facultatif)</label>
+			<select id="tags" name="tags[]" class="form-select" multiple>
+				{% for tag in tags %}
+					<option value="{{ tag.id }}" {% if tag.id in article.tags %} selected {% endif %}>{{ tag.nom_tag }}</option>
+				{% endfor %}
+			</select>
+			<small class="text-muted">Maintenez Ctrl (Windows) ou Cmd (Mac) pour sélectionner plusieurs tags.</small>
+		</div>
 
-    <button type="submit" class="btn btn-primary">Mettre à jour l'article</button>
-</form>
+		<!-- Statut (visible seulement pour les éditeurs) -->
+		{% if 2 in session.user.roles %}
+			<div class="mb-3">
+				<label for="statut" class="form-label">Statut de l'article</label>
+				<select id="statut" name="statut" class="form-select">
+					<option value="Brouillon">Brouillon</option>
+					<option value="Publié">Publié</option>
+				</select>
+			</div>
+		{% endif %}
+
+
+		<button type="submit" class="btn btn-primary">Mettre à jour l'article</button>
+	</form>
 {% endblock %}

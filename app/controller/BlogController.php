@@ -129,7 +129,15 @@ class BlogController
         }
 
         $contenu = $_POST['contenu'];
-        $statut = 'Brouillon';
+        // Définit le statut selon le rôle
+        if (in_array(2, $_SESSION['user']['roles'])) {
+            // Editeur : statut choisi dans le formulaire
+            $statut = $_POST['statut'] ?? 'Brouillon';
+        } else {
+            // Contributeur : toujours Brouillon
+            $statut = 'Brouillon';
+        }
+
         $tags = $_POST['tags'] ?? [];
 
         // gestion de l'image
@@ -263,12 +271,22 @@ class BlogController
             $imagePath = 'image/articles/' . $fileName;
         }
 
+        // Définit le statut selon le rôle
+        if (in_array(2, $_SESSION['user']['roles'])) {
+            // Editeur : statut choisi dans le formulaire
+            $statut = $_POST['statut'] ?? 'Brouillon';
+        } else {
+            // Contributeur : toujours Brouillon
+            $statut = 'Brouillon';
+        }
+
         // Mise à jour de l'article en base
         $this->BlogModel->updateArticle($article['id'], [
             'titre' => $titre,
             'slug' => $newSlug,
             'contenu' => $contenu,
-            'image_une' => $imagePath
+            'image_une' => $imagePath,
+            'statut' => $statut
         ]);
 
         // Mise à jour des tags
@@ -288,7 +306,8 @@ class BlogController
                 'nom' => $_SESSION['user']['nom_utilisateur'] ?? 'inconnu'
             ],
             'tags'        => $tags,
-            'image'       => $imagePath
+            'image'       => $imagePath,
+            'statut' => $statut
         ]);
 
         // Redirection après modification
