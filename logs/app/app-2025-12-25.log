@@ -11,3 +11,6 @@
 [2025-12-25 21:35:41] [INFO] Commentaire supprimé {"comment_id":6,"article_id":null,"auteur":"inconnu","contenu":"","admin":{"id":1,"nom":"AdminVTT"}}
 [2025-12-25 21:36:00] [INFO] Statut d'article modifié {"article_id":6,"nouveau_statut":"Publié","admin":{"id":1,"nom":"AdminVTT"}}
 [2025-12-25 21:36:07] [INFO] Statut d'article modifié {"article_id":6,"nouveau_statut":"Brouillon","admin":{"id":1,"nom":"AdminVTT"}}
+[2025-12-25 21:36:36] [INFO] Article supprimé {"article_id":6,"admin":{"id":1,"nom":"AdminVTT"}}
+[2025-12-25 21:38:45] [INFO] Nouvel article créé {"article_id":10,"titre":"dzdq","slug":"dzdq","utilisateur":{"id":1,"nom":"AdminVTT"},"tags":["6"],"image":null,"statut":"Brouillon"}
+[2025-12-25 21:38:52] [INFO] Article modifié {"article_id":10,"titre":"dzdq","slug":"dzdq","utilisateur":{"id":1,"nom":"AdminVTT"},"tags":["6"],"image":null,"statut":"Publié"}

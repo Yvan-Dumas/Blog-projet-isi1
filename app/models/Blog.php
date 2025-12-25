@@ -13,7 +13,7 @@ class Blog
 
     public function getAllArticles()
     {
-        $query = $this->db->prepare("SELECT * FROM articles WHERE statut = 'Publié'");
+        $query = $this->db->prepare("SELECT * FROM articles WHERE statut = 'Publié' ORDER BY date_mise_a_jour DESC");
         $query->execute();
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
