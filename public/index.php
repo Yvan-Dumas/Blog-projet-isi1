@@ -72,6 +72,12 @@ if (preg_match('#^/AdminArticle/Delete/([0-9]+)$#', $requestUri, $matches)) {
     exit;
 }
 
+// Route Ajout Tag
+if ($requestUri === '/AdminTag/Add') {
+    $AdminController->addTagAction();
+    exit;
+}
+
 
 
 // Route pour supprimer un article par slug
