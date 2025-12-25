@@ -116,6 +116,21 @@ class AdminController
         if (in_array($status, $validStatuses)) {
             $this->adminModel->updateCommentStatus($id, $status);
         }
+
+        // Log de modification
+        $logger = Logger::getInstance();
+        $logger->info("Statut de commentaire modifié", [
+            'comment_id'    => $id,
+            'article_id'    => $comment['article_id'] ?? null,
+            'auteur'        => $comment['nom_auteur'] ?? 'inconnu',
+            'ancien_statut' => $comment['statut'] ?? 'inconnu',
+            'nouveau_statut' => $status,
+            'admin'         => [
+                'id' => $_SESSION['user']['id'] ?? null,
+                'nom' => $_SESSION['user']['nom_utilisateur'] ?? 'inconnu'
+            ]
+        ]);
+
         // Redirection vers la liste
         header('Location: ' . $this->twig->getGlobals()['base_url'] . 'AdminComments');
         exit;
@@ -124,6 +139,20 @@ class AdminController
     public function deleteCommentAction(int $id): void
     {
         $this->adminModel->deleteComment($id);
+
+        // Log de suppression
+        $logger = Logger::getInstance();
+        $logger->info("Commentaire supprimé", [
+            'comment_id' => $id,
+            'article_id' => $comment['article_id'] ?? null,
+            'auteur'     => $comment['nom_auteur'] ?? 'inconnu',
+            'contenu'    => $comment['contenu'] ?? '',
+            'admin'      => [
+                'id' => $_SESSION['user']['id'] ?? null,
+                'nom' => $_SESSION['user']['nom_utilisateur'] ?? 'inconnu'
+            ]
+        ]);
+
         header('Location: ' . $this->twig->getGlobals()['base_url'] . 'AdminComments');
         exit;
     }
@@ -144,6 +173,18 @@ class AdminController
         if (in_array($status, $validStatuses)) {
             $this->adminModel->updateArticleStatus($id, $status);
         }
+
+        // Log de modification de statut
+        $logger = Logger::getInstance();
+        $logger->info("Statut d'article modifié", [
+            'article_id'    => $id,
+            'nouveau_statut' => $status,
+            'admin'         => [
+                'id'  => $_SESSION['user']['id'] ?? null,
+                'nom' => $_SESSION['user']['nom_utilisateur'] ?? 'inconnu'
+            ]
+        ]);
+
         header('Location: ' . $this->twig->getGlobals()['base_url'] . 'AdminArticles');
         exit;
     }
@@ -151,6 +192,17 @@ class AdminController
     public function deleteArticleAction(int $id): void
     {
         $this->adminModel->deleteArticle($id);
+
+        // Log de suppression
+        $logger = Logger::getInstance();
+        $logger->info("Article supprimé", [
+            'article_id' => $id,
+            'admin'      => [
+                'id'  => $_SESSION['user']['id'] ?? null,
+                'nom' => $_SESSION['user']['nom_utilisateur'] ?? 'inconnu'
+            ]
+        ]);
+
         header('Location: ' . $this->twig->getGlobals()['base_url'] . 'AdminArticles');
         exit;
     }
