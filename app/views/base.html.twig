@@ -44,7 +44,6 @@ document.documentElement.classList.add('dark');
 					<!-- Liens de navigation -->
 					<div class="d-flex">
 						<a href="{{ base_url }}" class="nav-link">Accueil</a>
-						<a href="{{ base_url }}contact" class="nav-link ms-4">Contact</a>
 
 						{% if session.user %}
 							{% if 1 in session.user.roles %}

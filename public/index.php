@@ -19,11 +19,10 @@ $twig->addGlobal('session', $_SESSION);
 
 // Récupération de l'URL demandée
 $requestUri = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)); #urldecode() permet de décoder les caractères spéciaux
-// ex: /BLOG-PROJET-ISI1/public/contact
 
 // On enlève tout jusqu'à /public inclus
 $requestUri = preg_replace('#^/.*/public#', '', $requestUri);
-// ex: devient /contact
+
 
 // Si l'url est vide, on met '/'
 if (empty($requestUri)) {
@@ -32,7 +31,7 @@ if (empty($requestUri)) {
 
 // Normalisation pour s'assurer qu'il y a un seul / au début
 $requestUri = '/' . ltrim($requestUri, '/');
-// ex: /contact ou /
+
 
 
 // Si on veut afficher un article
@@ -108,9 +107,6 @@ switch ($requestUri) {
     case '/':
     case '/index':
         $controller->index();
-        break;
-    case '/contact':
-        $controller->contact();
         break;
     case '/auth':
         $authController->auth();

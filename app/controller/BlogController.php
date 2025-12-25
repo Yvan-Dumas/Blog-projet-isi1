@@ -26,15 +26,6 @@ class BlogController
         ]);
     }
 
-    // Fonction pour la page contact
-    public function contact(): void
-    {
-        echo $this->twig->render('contact.twig', [
-            'titre_doc' => "Blog - Contact",
-            'titre_page' => 'Contactez-nous',
-        ]);
-    }
-
     // Fonction pour la page d'un article
     public function article($slug): void
     {
