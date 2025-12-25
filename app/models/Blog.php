@@ -88,6 +88,14 @@ class Blog
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function slugExists(string $slug): bool
+    {
+        $query = $this->db->prepare("SELECT COUNT(*) FROM articles WHERE slug = :slug");
+        $query->execute([':slug' => $slug]);
+        return $query->fetchColumn() > 0;
+    }
+
+
     public function createArticle(array $data): int
     {
         $query = $this->db->prepare("

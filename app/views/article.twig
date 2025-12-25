@@ -9,8 +9,11 @@
 
 	<div class="mx-4">
 		<p class="mb-3">Date de mise à jour :
-			{{ article["date_mise_a_jour"] }}</p>
-		<img class="mb-3" src="image/{{ article.image_une}}" alt="pas d'image disponible">
+			{{ article["date_mise_a_jour"]|date('d/m/Y H:i') }}</p>
+		{% if article.image_une %}
+			<img src="{{ base_url }}{{ article.image_une }}" class="img-fluid mb-4 rounded" alt="{{ article.titre }}">
+		{% endif %}
+
 
 		{{ article['contenu_html'] | raw}}
 

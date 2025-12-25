@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../models/Blog.php';
+
 use League\CommonMark\CommonMarkConverter;
 
 
@@ -14,6 +15,7 @@ class BlogController
         $this->BlogModel = new Blog();
     }
 
+    // Fonction pour la page d'accueil
     public function index(): void
     {
         $articles = $this->BlogModel->getAllArticles();
@@ -24,6 +26,7 @@ class BlogController
         ]);
     }
 
+    // Fonction pour la page contact
     public function contact(): void
     {
         echo $this->twig->render('contact.twig', [
@@ -32,19 +35,18 @@ class BlogController
         ]);
     }
 
+    // Fonction pour la page d'un article
     public function article($slug): void
     {
+        $article = $this->BlogModel->getArticleBySlug($slug); // récupération de l'article par son slug
 
-        $article = $this->BlogModel->getArticleBySlug($slug);
-
-        $converter = new CommonMarkConverter([
-        'html_input' => 'strip',   // sécurité
-        'allow_unsafe_links' => false,
+        $converter = new CommonMarkConverter([ // Converteur markdown
+            'html_input' => 'strip',   // sécurité
+            'allow_unsafe_links' => false,
         ]);
+        $article['contenu_html'] = $converter->convert($article['contenu'])->getContent(); // conversion du contenu markdown
 
-        $article['contenu_html'] = $converter->convert($article['contenu'])->getContent();
-
-        $comments = $this->BlogModel->getCommentsByArticleId($article['id']);
+        $comments = $this->BlogModel->getCommentsByArticleId($article['id']); // récupération des commentaires d'un article
 
         echo $this->twig->render('article.twig', [
             'article' => $article,
@@ -54,11 +56,29 @@ class BlogController
     }
 
 
-    /* Fonctions pour l'onglet Mes Articles (création, édition, suppression) */
+    /* === Fonctions pour l'onglet Mes Articles (création, édition, suppression) === */
+
+    // Fonction permettant de savoir si l'utilisateur est connecté et si c'est un éditeur ou un contributeur
+    private function userCanCreateArticle(): bool
+    {
+        if (!isset($_SESSION['user'])) {
+            return false; // pas connecté
+        }
+
+        $userRoles = $_SESSION['user']['roles'] ?? [];
+
+        if (in_array(2, $userRoles) || in_array(3, $userRoles)) {
+        return true;
+    }
+        return false;
+    }
+
+
+    // Fonction pour la page mes articles
     public function renderMyArticles(): void
     {
-        // Vérifie que l'utilisateur est connecté
-        if (!isset($_SESSION['user'])) {
+        // Vérifie que l'utilisateur est connecté et peut accéder à la page
+        if (!$this->userCanCreateArticle()) {
             header('Location: ' . $this->twig->getGlobals()['base_url']); //redirection vers l'accueil
             exit;
         }
@@ -72,10 +92,11 @@ class BlogController
         ]);
     }
 
+    // Fonction pour la page de création d'article
     public function renderCreateArticle(): void
     {
-        // Vérifie que l'utilisateur est connecté
-        if (!isset($_SESSION['user'])) {
+        // Vérifie que l'utilisateur est connecté et peut accéder à la page
+        if (!$this->userCanCreateArticle()) {
             header('Location: ' . $this->twig->getGlobals()['base_url']); //redirection vers l'accueil
             exit;
         }
@@ -88,29 +109,38 @@ class BlogController
         ]);
     }
 
-    //Traite le formulaire et stocke l'article en base
+    //Traite le formulaire de création d'article et stocke l'article en base
     public function storeArticle()
     {
-        // Vérifie que l'utilisateur est connecté
-        if (!isset($_SESSION['user'])) {
+        // Vérifie que l'utilisateur est connecté et peut accéder à la page
+        if (!$this->userCanCreateArticle()) {
             header('Location: ' . $this->twig->getGlobals()['base_url']); //redirection vers l'accueil
             exit;
         }
 
         $userId = $_SESSION['user']['id'];
         $titre = $_POST['titre'];
-        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $titre)));
+        $baseSlug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $titre)));
+        $slug = $baseSlug;
+        $counter = 1;
+        // Si le slug existe deja, on rajoute -1, -2, -3 ...
+        while ($this->BlogModel->slugExists($slug)) {
+            $slug = $baseSlug . '-' . $counter;
+            $counter++;
+        }
+
         $contenu = $_POST['contenu'];
         $statut = 'Brouillon';
         $tags = $_POST['tags'] ?? [];
 
+        // gestion de l'image
         $imagePath = null;
         if (!empty($_FILES['image']['name'])) {
-            $uploadDir = __DIR__ . '/../../public/uploads/';
-            $fileName = uniqid() . '-' . basename($_FILES['image']['name']);
-            $filePath = $uploadDir . $fileName;
-            move_uploaded_file($_FILES['image']['tmp_name'], $filePath);
-            $imagePath = 'uploads/' . $fileName; // ok maintenant
+            $uploadDir = __DIR__ . '/../../public/image/articles/';
+            $extension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
+            $fileName = uniqid('article_') . '.' . $extension;
+            move_uploaded_file($_FILES['image']['tmp_name'], $uploadDir . $fileName);
+            $imagePath = 'image/articles/' . $fileName; // chemin stocké en base
         }
 
         // Crée l'article
@@ -131,6 +161,9 @@ class BlogController
         header('Location: ' . $this->twig->getGlobals()['base_url']); //redirection vers l'accueil
         exit;
     }
+    /*=== === */
+
+
     public function postComment()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
