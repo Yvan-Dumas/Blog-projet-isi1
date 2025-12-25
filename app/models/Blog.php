@@ -129,6 +129,76 @@ class Blog
         ]);
     }
 
+    // Récupère les tags associés à un article
+    public function getTagsByArticle(int $articleId): array
+    {
+        $query = $this->db->prepare("
+        SELECT t.id, t.nom_tag
+        FROM tags t
+        INNER JOIN article_tag at ON t.id = at.tag_id
+        WHERE at.article_id = :articleId
+    ");
+        $query->execute([':articleId' => $articleId]);
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Supprime tous les tags liés à un article
+     */
+    public function removeTagsFromArticle(int $articleId): void
+    {
+        $query = $this->db->prepare("
+        DELETE FROM article_tag WHERE article_id = :articleId
+    ");
+        $query->execute([
+            ':articleId' => $articleId
+        ]);
+    }
+
+
+    // Met à jour un article existant
+    public function updateArticle(int $articleId, array $data): void
+    {
+        $query = $this->db->prepare("
+        UPDATE articles
+        SET titre = :titre,
+            slug = :slug,
+            contenu = :contenu,
+            image_une = :image_une,
+            statut = :statut,
+            date_mise_a_jour = NOW()
+        WHERE id = :articleId
+    ");
+
+        $query->execute([
+            ':titre' => $data['titre'],
+            ':slug' => $data['slug'],
+            ':contenu' => $data['contenu'],
+            ':image_une' => $data['image_une'] ?? null,
+            ':statut' => $data['statut'],
+            ':articleId' => $articleId
+        ]);
+
+        // Supprime les anciens tags
+        $del = $this->db->prepare("DELETE FROM article_tag WHERE article_id = :articleId");
+        $del->execute([':articleId' => $articleId]);
+
+        // Réassocie les tags sélectionnés
+        if (!empty($data['tags'])) {
+            $insertTag = $this->db->prepare("
+            INSERT INTO article_tag (article_id, tag_id)
+            VALUES (:articleId, :tagId)
+        ");
+            foreach ($data['tags'] as $tagId) {
+                $insertTag->execute([
+                    ':articleId' => $articleId,
+                    ':tagId' => $tagId
+                ]);
+            }
+        }
+    }
+
+
     public function deleteArticle(int $articleId): bool
     {
         // Supprime d'abord les associations tags

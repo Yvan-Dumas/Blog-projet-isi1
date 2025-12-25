@@ -74,7 +74,14 @@ if (preg_match('#^/myArticles/delete/(.+)$#', $requestUri, $matches)) {
 // Route pour modifier un article par slug
 if (preg_match('#^/myArticles/edit/(.+)$#', $requestUri, $matches)) {
     $slug = $matches[1];
-    $controller->editArticleBySlug($slug);
+    $controller->renderArticleBySlug($slug);
+    exit;
+}
+
+// Route pour modifier un article une fois le formulaire soumis
+if (preg_match('#^/myArticles/updateArticle/(.+)$#', $requestUri, $matches)) {
+    $slug = $matches[1];
+    $controller->updateArticleBySlug($slug);
     exit;
 }
 

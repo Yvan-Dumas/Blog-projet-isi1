@@ -2,3 +2,4 @@
 [2025-12-25 19:16:25] [INFO] Article supprimé {"article_id":4,"slug":"test","titre":"test","utilisateur":{"id":1,"nom":"AdminVTT"}}
 [2025-12-25 19:16:29] [INFO] Article supprimé {"article_id":8,"slug":"a-uioprd-az","titre":"a^\"uioprd)à_az","utilisateur":{"id":1,"nom":"AdminVTT"}}
 [2025-12-25 19:16:33] [INFO] Article supprimé {"article_id":7,"slug":"test-2","titre":"test","utilisateur":{"id":1,"nom":"AdminVTT"}}
+[2025-12-25 20:06:43] [INFO] Article modifié {"article_id":6,"titre":"test","slug":"test","utilisateur":{"id":1,"nom":"AdminVTT"},"tags":["7"],"image":"image\/articles\/article_694d6d707bb6b.jpg"}

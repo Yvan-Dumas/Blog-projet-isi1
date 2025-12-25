@@ -176,7 +176,7 @@ class BlogController
     }
 
     // Fonction pour la page de modification d'article
-    public function editArticleBySlug(): void
+    public function renderArticleBySlug($slug): void
     {
         // Vérifie que l'utilisateur est connecté et peut accéder à la page
         if (!$this->userCanCreateArticle()) {
@@ -184,13 +184,118 @@ class BlogController
             exit;
         }
 
+        // Récupère l'article par slug
+        $article = $this->BlogModel->getArticleBySlug($slug);
+        if (!$article) {
+            header('Location: ' . $this->twig->getGlobals()['base_url']); //redirection vers l'accueil
+            exit;
+        }
+
+        // Vérifie que l'utilisateur est le propriétaire
+        $userId = $_SESSION['user']['id'];
+        if ($article['utilisateur_id'] != $userId) {
+            header('HTTP/1.1 403 Forbidden');
+            echo "Vous n'avez pas le droit de modifier cet article.";
+            exit;
+        }
+
         $tags = $this->BlogModel->getAllTags();
-        echo $this->twig->render('myArticles/create.twig', [
-            'titre_doc' => "Blog - Nouvel article",
-            'titre_page' => 'Nouvel article',
-            'tags' => $tags
+
+        // Récupère les tags associés à l'article
+        $articleTags = $this->BlogModel->getTagsByArticle($article['id']);
+        $article['tags'] = array_column($articleTags, 'id');
+
+        echo $this->twig->render('myArticles/edit.twig', [
+            'titre_doc' => "Blog - Modifier l'article",
+            'titre_page' => 'Modifier l\'article',
+            'tags' => $tags,
+            'article' => $article
         ]);
     }
+
+    // Traite le formulaire de modification d'article
+    public function updateArticleBySlug(string $slug)
+    {
+        // Vérifie que l'utilisateur est connecté et peut modifier des articles
+        if (!$this->userCanCreateArticle()) {
+            header('Location: ' . $this->twig->getGlobals()['base_url']);
+            exit;
+        }
+
+        $userId = $_SESSION['user']['id'];
+
+        // Récupère l'article existant
+        $article = $this->BlogModel->getArticleBySlug($slug);
+        if (!$article) {
+            header('Location: ' . $this->twig->getGlobals()['base_url']);
+            exit;
+        }
+
+        // Vérifie que l'utilisateur est le propriétaire
+        if ($article['utilisateur_id'] != $userId) {
+            header('HTTP/1.1 403 Forbidden');
+            echo "Vous n'avez pas le droit de modifier cet article.";
+            exit;
+        }
+
+        // Récupère les données du formulaire
+        $titre = $_POST['titre'];
+        $baseSlug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $titre)));
+        $newSlug = $baseSlug;
+        $counter = 1;
+
+        // Génère un slug unique (ignore l'article actuel)
+        while ($this->BlogModel->slugExists($newSlug) && $newSlug !== $article['slug']) {
+            $newSlug = $baseSlug . '-' . $counter;
+            $counter++;
+        }
+
+        $contenu = $_POST['contenu'];
+        $tags = $_POST['tags'] ?? [];
+
+        // Gestion de l'image
+        $imagePath = $article['image_une']; // garde l'image actuelle
+        if (!empty($_FILES['image']['name'])) {
+            $uploadDir = __DIR__ . '/../../public/image/articles/';
+            $extension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
+            $fileName = uniqid('article_') . '.' . $extension;
+            move_uploaded_file($_FILES['image']['tmp_name'], $uploadDir . $fileName);
+            $imagePath = 'image/articles/' . $fileName;
+        }
+
+        // Mise à jour de l'article en base
+        $this->BlogModel->updateArticle($article['id'], [
+            'titre' => $titre,
+            'slug' => $newSlug,
+            'contenu' => $contenu,
+            'image_une' => $imagePath
+        ]);
+
+        // Mise à jour des tags
+        $this->BlogModel->removeTagsFromArticle($article['id']);
+        foreach ($tags as $tagId) {
+            $this->BlogModel->addTagToArticle($article['id'], (int) $tagId);
+        }
+
+        // Log de modification
+        $logger = Logger::getInstance();
+        $logger->info("Article modifié", [
+            'article_id'  => $article['id'],
+            'titre'       => $titre,
+            'slug'        => $newSlug,
+            'utilisateur' => [
+                'id' => $userId,
+                'nom' => $_SESSION['user']['nom_utilisateur'] ?? 'inconnu'
+            ],
+            'tags'        => $tags,
+            'image'       => $imagePath
+        ]);
+
+        // Redirection après modification
+        header('Location: ' . $this->twig->getGlobals()['base_url']);
+        exit;
+    }
+
 
 
     // Fonction pour supprimer un article
