@@ -197,7 +197,6 @@ footer {
   color: var(--muted-text) !important;
 }
 
-/* Custom Input visibility for Dark Mode */
 .dark .dark-white-input {
   border-color: #ffffff !important;
 }
