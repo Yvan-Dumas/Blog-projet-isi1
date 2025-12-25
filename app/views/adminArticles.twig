@@ -1,0 +1,77 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+	{{ titre_doc }}
+{% endblock %}
+
+{% block content %}
+	<div class="container my-5">
+		<div class="d-flex justify-content-between align-items-center mb-4">
+			<h1>{{ titre_page }}</h1>
+			<a href="{{ base_url }}AdminBoard" class="btn btn-secondary">Retour au tableau de bord</a>
+		</div>
+
+		<div class="table-responsive shadow-sm rounded">
+			<table class="table table-hover align-middle mb-0 bg-transparent">
+				<thead class="table-light">
+					<tr>
+						<th scope="col">Date</th>
+						<th scope="col">Titre</th>
+						<th scope="col">Auteur</th>
+						<th scope="col">Statut</th>
+						<th scope="col" class="text-end">Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for article in articles %}
+						<tr>
+							<td class="text-nowrap">{{ article.date_creation|date('d/m/Y H:i') }}</td>
+							<td>
+								<strong>{{ article.titre }}</strong><br>
+								<small class="text-muted">Slug:
+									{{ article.slug }}</small>
+							</td>
+							<td>{{ article.nom_utilisateur }}</td>
+							<td>
+								{% if article.statut == 'Publié' %}
+									<span class="badge bg-success">Publié</span>
+								{% elseif article.statut == 'Brouillon' %}
+									<span class="badge bg-warning text-dark">Brouillon</span>
+								{% else %}
+									<span class="badge bg-secondary">Archivé</span>
+								{% endif %}
+							</td>
+							<td class="text-end">
+								<div class="btn-group" role="group">
+									<button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+										Statut
+									</button>
+									<ul class="dropdown-menu">
+										<li>
+											<a class="dropdown-item" href="{{ base_url }}AdminArticle/Status/{{ article.id }}/Publié">Publié</a>
+										</li>
+										<li>
+											<a class="dropdown-item" href="{{ base_url }}AdminArticle/Status/{{ article.id }}/Brouillon">Brouillon</a>
+										</li>
+										<li>
+											<a class="dropdown-item" href="{{ base_url }}AdminArticle/Status/{{ article.id }}/Archivé">Archivé</a>
+										</li>
+									</ul>
+								</div>
+
+								<a href="{{ base_url }}AdminArticle/Delete/{{ article.id }}" class="btn btn-sm btn-danger ms-2" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet article ? Cette action est irréversible.');" title="Supprimer">
+									<i class="bi bi-trash"></i>
+									Supprimer
+								</a>
+							</td>
+						</tr>
+					{% else %}
+						<tr>
+							<td colspan="5" class="text-center text-muted py-3">Aucun article trouvé.</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+{% endblock %}

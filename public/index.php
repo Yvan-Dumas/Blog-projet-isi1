@@ -18,7 +18,7 @@ $twig->addGlobal('base_url', $basePath . '/');
 $twig->addGlobal('session', $_SESSION);
 
 // Récupération de l'URL demandée
-$requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$requestUri = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)); #urldecode() permet de décoder les caractères spéciaux
 // ex: /BLOG-PROJET-ISI1/public/contact
 
 // On enlève tout jusqu'à /public inclus
@@ -59,6 +59,16 @@ if (preg_match('#^/AdminComment/Reject/([0-9]+)$#', $requestUri, $matches)) {
 }
 if (preg_match('#^/AdminComment/Delete/([0-9]+)$#', $requestUri, $matches)) {
     $AdminController->deleteCommentAction((int) $matches[1]);
+    exit;
+}
+
+// Routes Gestion Articles
+if (preg_match('#^/AdminArticle/Status/([0-9]+)/([a-zA-Zéèà]+)$#', $requestUri, $matches)) {
+    $AdminController->updateArticleStatusAction((int) $matches[1], $matches[2]);
+    exit;
+}
+if (preg_match('#^/AdminArticle/Delete/([0-9]+)$#', $requestUri, $matches)) {
+    $AdminController->deleteArticleAction((int) $matches[1]);
     exit;
 }
 
@@ -119,6 +129,9 @@ switch ($requestUri) {
         break;
     case '/AdminComments':
         $AdminController->commentsList();
+        break;
+    case '/AdminArticles':
+        $AdminController->articlesList();
         break;
     case '/myArticles':
         $controller->renderMyArticles();

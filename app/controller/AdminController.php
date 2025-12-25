@@ -127,4 +127,31 @@ class AdminController
         header('Location: ' . $this->twig->getGlobals()['base_url'] . 'AdminComments');
         exit;
     }
+
+    public function articlesList(): void
+    {
+        $articles = $this->adminModel->getAllArticlesWithAuthors();
+        echo $this->twig->render('adminArticles.twig', [
+            'titre_doc' => "Blog - Gestion Articles",
+            'titre_page' => "Gestion des articles",
+            'articles' => $articles
+        ]);
+    }
+
+    public function updateArticleStatusAction(int $id, string $status): void
+    {
+        $validStatuses = ['Publié', 'Brouillon', 'Archivé'];
+        if (in_array($status, $validStatuses)) {
+            $this->adminModel->updateArticleStatus($id, $status);
+        }
+        header('Location: ' . $this->twig->getGlobals()['base_url'] . 'AdminArticles');
+        exit;
+    }
+
+    public function deleteArticleAction(int $id): void
+    {
+        $this->adminModel->deleteArticle($id);
+        header('Location: ' . $this->twig->getGlobals()['base_url'] . 'AdminArticles');
+        exit;
+    }
 }
