@@ -155,4 +155,27 @@ class Admin
         $stmt = $this->db->prepare("DELETE FROM Commentaires WHERE id = :id");
         return $stmt->execute([':id' => $id]);
     }
+
+    /* --- Gestion des Articles --- */
+
+    public function getAllArticlesWithAuthors(): array
+    {
+        $sql = "SELECT a.*, u.nom_utilisateur 
+                FROM Articles a
+                LEFT JOIN Utilisateurs u ON a.utilisateur_id = u.id
+                ORDER BY a.date_creation DESC";
+        return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function updateArticleStatus(int $id, string $status): bool
+    {
+        $stmt = $this->db->prepare("UPDATE Articles SET statut = :status WHERE id = :id");
+        return $stmt->execute([':status' => $status, ':id' => $id]);
+    }
+
+    public function deleteArticle(int $id): bool
+    {
+        $stmt = $this->db->prepare("DELETE FROM Articles WHERE id = :id");
+        return $stmt->execute([':id' => $id]);
+    }
 }
