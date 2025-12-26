@@ -1,4 +1,0 @@
-[2025-12-24 02:19:09] [SECURITY] Echec de connexion {"email":"admin@vtt.com","ip":"::1"}
-[2025-12-24 02:19:13] [SECURITY] Echec de connexion {"email":"admin@vtt.com","ip":"::1"}
-[2025-12-24 10:53:02] [SECURITY] Mise à jour des rôles utilisateur {"admin_id":1,"user_id":1,"new_roles":["1"]}
-[2025-12-24 10:53:26] [SECURITY] Mise à jour des rôles utilisateur {"admin_id":1,"user_id":1,"new_roles":["1","2","3"]}
