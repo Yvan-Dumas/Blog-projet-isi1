@@ -15,6 +15,7 @@ class AuthController
         $this->blogModel = new Blog();
     }
 
+    // Méthode pour la page 
     public function auth(): void
     {
         echo $this->twig->render('auth.twig', [
@@ -23,6 +24,7 @@ class AuthController
         ]);
     }
 
+    // Méthode pour la connexion au blog
     public function login(): void
     {
         // Récupérer les données du formulaire
@@ -65,6 +67,7 @@ class AuthController
         }
     }
 
+    // Méthode pour la déconnexion
     public function logout(): void
     {
         // On détruit la session
@@ -73,6 +76,8 @@ class AuthController
         header('Location: ' . $this->twig->getGlobals()['base_url']);
         exit;
     }
+
+    // Méthode pour l'inscription d'un utilisateur
     public function register(): void
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -106,6 +111,7 @@ class AuthController
         }
     }
 
+    // Méthode pour la page d'inscription
     private function renderRegister(?string $error = null): void
     {
         echo $this->twig->render('register.twig', [

@@ -2,6 +2,8 @@
 
 require_once __DIR__ . '/../../config/Database.php';
 
+require_once __DIR__ . '/../Logger.php';
+
 class Admin
 {
     private $db;
@@ -190,4 +192,63 @@ class Admin
         $stmt = $this->db->prepare("DELETE FROM Articles WHERE id = :id");
         return $stmt->execute([':id' => $id]);
     }
+
+    public function updateTag(int $id, string $name): bool
+{
+    try {
+        $query = $this->db->prepare("
+            UPDATE tags 
+            SET nom_tag = :name 
+            WHERE id = :id
+        ");
+
+        return $query->execute([
+            ':id' => $id,
+            ':name' => $name
+        ]);
+
+    } catch (PDOException $e) {
+        Logger::getInstance()->error('Erreur SQL lors de la modification du tag', [
+            'tag_id' => $id,
+            'nom' => $name,
+            'error' => $e->getMessage()
+        ]);
+
+        return false;
+    }
+}
+
+public function deleteTag(int $id): bool
+{
+    try {
+        $this->db->beginTransaction();
+
+        // Supprime les relations article <-> tag
+        $queryRelations = $this->db->prepare("
+            DELETE FROM article_tag WHERE tag_id = :id
+        ");
+        $queryRelations->execute([':id' => $id]);
+
+        // Supprime le tag
+        $queryTag = $this->db->prepare("
+            DELETE FROM tags WHERE id = :id
+        ");
+        $queryTag->execute([':id' => $id]);
+
+        $this->db->commit();
+        return true;
+
+    } catch (PDOException $e) {
+        $this->db->rollBack();
+
+        Logger::getInstance()->error('Erreur SQL lors de la suppression du tag', [
+            'tag_id' => $id,
+            'error' => $e->getMessage()
+        ]);
+
+        return false;
+    }
+}
+
+
 }

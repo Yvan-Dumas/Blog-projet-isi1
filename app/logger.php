@@ -42,7 +42,7 @@ class Logger
         $this->write('INFO', $message, $context, 'app');
     }
 
-    // Log de sécurité (auth, accès interdit…)
+    // Log de sécurité (auth, gestion rôles)
     public function security(string $message, array $context = []): void
     {
         $this->write('SECURITY', $message, $context, 'security');

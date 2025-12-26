@@ -1,2 +1,10 @@
 [2025-12-26 12:18:45] [INFO] Article modifié {"article_id":1,"titre":"Top 5 des Traces VTT Enduro en Rhône-Alpes","slug":"top-5-des-traces-vtt-enduro-en-rh-ne-alpes","utilisateur":{"id":1,"nom":"AdminVTT"},"tags":["2","4","1"],"image":null,"statut":"Brouillon"}
 [2025-12-26 12:18:53] [INFO] Article modifié {"article_id":1,"titre":"Top 5 des Traces VTT Enduro en Rhône-Alpes","slug":"top-5-des-traces-vtt-enduro-en-rh-ne-alpes","utilisateur":{"id":1,"nom":"AdminVTT"},"tags":["2","4","1"],"image":null,"statut":"Publié"}
+[2025-12-26 12:23:57] [INFO] Article supprimé {"article_id":1,"slug":"top-5-des-traces-vtt-enduro-en-rh-ne-alpes","titre":"Top 5 des Traces VTT Enduro en Rhône-Alpes","utilisateur":{"id":1,"nom":"AdminVTT"}}
+[2025-12-26 12:29:08] [INFO] Nouvel article créé {"article_id":14,"titre":"test","slug":"test","utilisateur":{"id":1,"nom":"AdminVTT"},"tags":["7"],"image":null,"statut":"Brouillon"}
+[2025-12-26 12:36:15] [INFO] Tag supprimé {"tag_id":8,"admin":1}
+[2025-12-26 12:36:54] [INFO] Tag supprimé {"tag_id":9,"admin":1}
+[2025-12-26 13:58:28] [INFO] Tag modifié {"tag_id":10,"nom":"supert","admin":1}
+[2025-12-26 13:58:33] [INFO] Tag modifié {"tag_id":10,"nom":"super","admin":1}
+[2025-12-26 13:58:47] [INFO] Article modifié {"article_id":14,"titre":"test","slug":"test","utilisateur":{"id":1,"nom":"AdminVTT"},"tags":["10"],"image":null,"statut":"Brouillon"}
+[2025-12-26 13:58:56] [INFO] Tag modifié {"tag_id":10,"nom":"supert","admin":1}

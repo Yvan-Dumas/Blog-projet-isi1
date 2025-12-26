@@ -13,6 +13,7 @@ class AdminController
         $this->adminModel = new Admin();
     }
 
+    // Fonction pour vérifier si l'utilisateur est connecté et est un admin
     private function checkAdminAccess(): void
     {
         // 1. L'utilisateur doit être connecté
@@ -22,7 +23,6 @@ class AdminController
         }
 
         // 2. L'utilisateur doit avoir le rôle Admin (ID = 1)
-        // On suppose que $_SESSION['user']['roles'] est un tableau d'IDs
         if (!in_array(1, $_SESSION['user']['roles'])) {
             header('HTTP/1.1 403 Forbidden');
             echo "Accès refusé. Vous n'êtes pas administrateur.";
@@ -30,9 +30,13 @@ class AdminController
         }
     }
 
+    // Fonction pour le tableau de bord admin
     public function AdminBoard(): void
     {
+        // Vérification permission
         $this->checkAdminAccess();
+
+        // Récupération des stats
         $stats = [
             'nbArticles' => $this->adminModel->getArticleCount(),
             'nbCommentaires' => $this->adminModel->getPendingCommentCount(),
@@ -47,9 +51,13 @@ class AdminController
         ]);
     }
 
+    // Fonction pour le fil d'activité
     public function activity(): void
     {
+        // Vérification permission
         $this->checkAdminAccess();
+
+        // récupération des données
         $data = [
             'articles' => $this->adminModel->getLastArticles(),
             'comments' => $this->adminModel->getLastComments(),
@@ -62,6 +70,8 @@ class AdminController
             'activity' => $data
         ]);
     }
+
+    // Méthode pour l'affichage de la gestion des utilisateurs
     public function usersList(): void
     {
         $this->checkAdminAccess();
@@ -73,15 +83,16 @@ class AdminController
         ]);
     }
 
+    // Méthode pour modifier les rôles des utilisateurs
     public function editUserRoles(int $id): void
     {
+        // Vérification permission
         $this->checkAdminAccess();
-        // Handle POST update
+
+        // Méthode POST
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
-                $roles = $_POST['roles'] ?? []; // Array of role IDs
-                // Security: Ensure at least one role is assigned or handle empty? 
-                // Better allow empty if that's desired, but usually a user needs a role.
+                $roles = $_POST['roles'] ?? []; // tableau des rôles
 
                 if ($this->adminModel->updateUserRoles($id, $roles)) {
                     Logger::getInstance()->security(
@@ -103,7 +114,7 @@ class AdminController
             }
         }
 
-        // Handle GET display
+        // Méthode GET
         $user = $this->adminModel->getUserById($id);
         $userRoles = $this->adminModel->getUserRoles($id);
         $allRoles = $this->adminModel->getAllRoles();
@@ -121,8 +132,11 @@ class AdminController
             'allRoles' => $allRoles
         ]);
     }
+
+    // Méthode pour la page avec la liste des commentaires
     public function commentsList(): void
     {
+        // Vérification permission
         $this->checkAdminAccess();
         $comments = $this->adminModel->getAllComments();
         echo $this->twig->render('adminComments.twig', [
@@ -132,8 +146,10 @@ class AdminController
         ]);
     }
 
+    // Méthode pour modifier le statut d'un commentaire
     public function updateCommentStatusAction(int $id, string $status): void
     {
+        // Vérification permission
         $this->checkAdminAccess();
         try {
             // Sécurité : vérifier que le statut est valide
@@ -164,15 +180,15 @@ class AdminController
         exit;
     }
 
+    // Méthode pour supprimer un commentaire
     public function deleteCommentAction(int $id): void
     {
+        // Vérification permission
         $this->checkAdminAccess();
         try {
             $this->adminModel->deleteComment($id);
         } catch (Exception $e) {
             Logger::getInstance()->error("Erreur suppression commentaire : " . $e->getMessage(), ['id' => $id]);
-            // On peut rediriger avec flash ou laisser continuer pour le log de suppression (qui pourrait échouer si record deleted ?)
-            // Idéalement on arrête si erreur critique. Mais continuons pour garder la structure.
         }
 
         // Log de suppression
@@ -192,8 +208,10 @@ class AdminController
         exit;
     }
 
+    // Méthode pour la page avec la liste des articles
     public function articlesList(): void
     {
+        // Vérification permission
         $this->checkAdminAccess();
         $articles = $this->adminModel->getAllArticlesWithAuthors();
         echo $this->twig->render('adminArticles.twig', [
@@ -203,8 +221,10 @@ class AdminController
         ]);
     }
 
+    // Méthode pour mettre à jour le statut d'un article
     public function updateArticleStatusAction(int $id, string $status): void
     {
+        // Vérification permission
         $this->checkAdminAccess();
         try {
             $validStatuses = ['Publié', 'Brouillon', 'Archivé'];
@@ -230,8 +250,10 @@ class AdminController
         exit;
     }
 
+    // Méthode pour supprimer un article
     public function deleteArticleAction(int $id): void
     {
+        // Vérification permission
         $this->checkAdminAccess();
         try {
             $this->adminModel->deleteArticle($id);
@@ -253,8 +275,10 @@ class AdminController
         exit;
     }
 
+    // Méthoe pour créer un tag
     public function addTagAction(): void
     {
+        // Vérification permission
         $this->checkAdminAccess();
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $tagName = trim($_POST['tag_name'] ?? '');
@@ -266,6 +290,61 @@ class AdminController
                 }
             }
         }
+        header('Location: ' . $this->twig->getGlobals()['base_url'] . 'AdminBoard');
+        exit;
+    }
+
+    // Méthode pour la page de modifier d'un tag
+    public function editTag(): void
+    {
+        // Vérification permission
+        $this->checkAdminAccess();
+
+        echo $this->twig->render('adminBoardTagEdit.twig', [
+            'tag_id' => $_POST['tag_id'],
+            'tag_name' => $_POST['tag_name']
+        ]);
+    }
+
+
+    // Méthode pour mettre à jour un tag
+    public function updateTag(): void
+    {
+        // Vérification permission
+        $this->checkAdminAccess();
+
+        $id = (int) $_POST['tag_id'];
+        $name = trim($_POST['tag_name']);
+
+        if ($name !== '') {
+            $this->adminModel->updateTag($id, $name);
+
+            Logger::getInstance()->info('Tag modifié', [
+                'tag_id' => $id,
+                'nom' => $name,
+                'admin' => $_SESSION['user']['id']
+            ]);
+        }
+
+        header('Location: ' . $this->twig->getGlobals()['base_url'] . 'AdminBoard');
+        exit;
+    }
+
+    // Méthode pour supprimer un tag
+    public function deleteTag(): void
+    {
+        // Vérification permission
+        $this->checkAdminAccess();
+
+        $id = (int) $_POST['tag_id'];
+
+        $this->adminModel->deleteTag($id);
+
+        Logger::getInstance()->info('Tag supprimé', [
+            'tag_id' => $id,
+            'admin' => $_SESSION['user']['id']
+        ]);
+
         header('Location: ' . $this->twig->getGlobals()['base_url'] . 'AdminBoard');
         exit;
     }

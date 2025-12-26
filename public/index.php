@@ -78,6 +78,25 @@ if ($requestUri === '/AdminTag/Add') {
     exit;
 }
 
+// Route pour modifier un tag
+if ($requestUri === '/AdminBoard/Edit' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    $AdminController->editTag();
+    exit;
+}
+
+// Route pour le formulaire de modification de tag
+if ($requestUri === '/AdminBoard/Update' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    $AdminController->updateTag();
+    exit;
+}
+
+// Supprimer un tag
+if ($requestUri === '/AdminBoard/Delete' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    $AdminController->deleteTag();
+    exit;
+}
+
+
 
 
 // Route pour supprimer un article par slug

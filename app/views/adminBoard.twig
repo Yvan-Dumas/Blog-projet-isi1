@@ -50,14 +50,35 @@
 			<div class="card-body">
 				<div class="d-flex flex-wrap gap-3">
 					{% for tag in tags %}
-						<div class="d-flex align-items-center border rounded p-2 px-3">
+						<div class="d-flex align-items-center border rounded p-2 px-3 gap-2">
 							<span class="fw-bold me-2 text-muted">{{ tag.nom_tag }}</span>
-							<span class="badge bg-primary rounded-pill">{{ tag.article_count }}
-								articles</span>
+
+							<span class="badge bg-primary rounded-pill">
+								{{ tag.article_count }}
+								articles
+							</span>
+
+							<!-- Modifier -->
+							<form action="{{ base_url }}AdminBoard/Edit" method="POST" class="d-inline">
+								<input type="hidden" name="tag_id" value="{{ tag.id }}">
+								<input type="hidden" name="tag_name" value="{{ tag.nom_tag }}">
+								<button type="submit" class="btn btn-sm btn-outline-warning">
+									<i class="bi bi-pencil"></i>
+								</button>
+							</form>
+
+							<!-- Supprimer -->
+							<form action="{{ base_url }}AdminBoard/Delete" method="POST" class="d-inline" onsubmit="return confirm('Supprimer ce tag ?');">
+								<input type="hidden" name="tag_id" value="{{ tag.id }}">
+								<button type="submit" class="btn btn-sm btn-outline-danger">
+									<i class="bi bi-trash"></i>
+								</button>
+							</form>
 						</div>
 					{% else %}
 						<p class="text-muted mb-0">Aucun tag trouvé.</p>
 					{% endfor %}
+
 				</div>
 				<hr class="my-3">
 				<form action="{{ base_url }}AdminTag/Add" method="POST" class="d-flex justify-content-end align-items-center gap-2">
