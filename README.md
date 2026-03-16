@@ -1,6 +1,5 @@
-# Blog website
-
-Blog website built for the Polytech Lyon 3A ISI1-Web (2025-2026) course. Users can publish, manage and interact with articles through a sophisticated Role-Based Access Control system.
+# 📝 Blog website
+Blog website built for the Polytech Lyon 3A ISI1-Web course. This project focuses on software architecture, implementing a secure Role-Based Access Control (RBAC) system and following strict MVC patterns.
 
 ## Features 
 - Secure authentification of users
@@ -11,8 +10,10 @@ Blog website built for the Polytech Lyon 3A ISI1-Web (2025-2026) course. Users c
 - Dark mode/light mode
 - Dyslexic-friendly font option
 
-## Architecture
-This project follows the MVC pattern. It also uses the singleton pattern for the database connection.
+## Architecture & Patterns
+This project follows the MVC pattern.  
+It also uses the singleton pattern for the database connection.  
+Template Engine: Used Twig for secure and reusable front-end components.
 
 ## Technical Stack
 - Twig, HTML, CSS, Bootstrap, Alpine.js
